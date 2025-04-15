@@ -1,0 +1,174 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*---------- MAIN STYLES ----------*/
+/*----- HEADER STYLES-----*/
+#header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#logo__container{
+    width: 30%;
+}
+#logo__container img{
+    width: 100%;
+    margin: 25px;
+}
+#burguer__nav {
+    position: absolute;
+    z-index: 30;
+    top: 0;
+    right: 0;
+}
+#burguer__nav i{
+    margin: 25px;
+}
+#functions__burguer__container{
+    background-color: rgb(203, 128, 128);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100dvh;
+    width:100dvw;
+    overflow: hidden;
+    transition: all .5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#functions__burguer__inner{
+    width: 80%;
+    height: 80%;
+}
+.functions__burguer__hiden{
+    margin: 25px;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0;
+}
+.menu__buttons{
+    position: relative;
+    z-index: 20;
+    display: flex;
+}
+.menu__buttons h3{
+    position: relative;
+    z-index: -1;
+}
+/*----- END HEADER STYLES-----*/
+/*----- CALLENDAR STYLES-----*/
+#main__callendar{
+    width: 90%;
+    height: 50dvh;
+    margin: 0 auto;
+    background-color: grey;
+}
+/*----- END CALLENDAR STYLES-----*/
+/*----- TASK GROUPS STYLES-----*/
+#task__group__container{
+    width: 90%;
+    margin: 0 auto;
+    height: 30dvh;
+    background-color: rgb(183, 47, 47);
+}
+.task__group, .task__group summary{
+    padding: 5px;
+    margin: 2px;
+    background-color: beige;
+}
+.group__content{
+    margin-left: 25px;
+}
+
+/*----- END TASK GROUPS STYLES-----*/
+/*----- FOOTER STYLES-----*/
+#footer{
+    position: fixed;
+    bottom: 0;
+    height: 7dvh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+#weather__container, #news__container{
+    width: 50%;
+    height: 100%;
+}
+#weather__container{
+    background-color: greenyellow;
+}
+#news__container{
+    background-color: blue;
+}
+/*----- END FOOTER STYLES-----*/
+
+/*---------- END MAIN STYLES ----------*/
+
+
+/*---------- FUNCTIONS STYLES ----------*/
+/*----- BLUR SECTION STYLES-----*/
+#blur__background{
+    z-index: 10;
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100dvh;
+    width:100dvw;
+    background-color: black;
+    opacity: 0.8;
+    backdrop-filter: blur(50px);
+}
+#blur__section--X{
+    font-size: 30px;
+    color: #FFFFFF;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 60;
+}
+#blur__content__container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: 100dvw;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#blur__content{
+    background-color: beige;
+    width: 90%;
+    height: 80%;
+}
+#blur__content form{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;    
+}
+.hide{
+    display: none !important;
+}
+.inputs__container{
+    width: 80%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.blur__inputs{
+    width: 100%;
+}
+#add__group__btn{
+
+}
+/*----- END BLUR SECTION STYLES-----*/
+/*---------- END STYLES ----------*/

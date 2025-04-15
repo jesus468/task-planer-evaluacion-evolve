@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sortUlife</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer type="module" src="./main.js" ></script>
+
+    <script src="https://kit.fontawesome.com/cb3f5846d1.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header id="header">
+        <div id="logo__container">
+            <a href="./index.html">
+                <img src="./assets/branding/logo.png" alt="">
+            </a>
+        </div>
+
+        <div id="navigation__container">
+            <div id="burguer__nav">
+                <i class="fa-solid fa fa-bars"></i>
+            </div>
+            <div id="functions__burguer__container" class="functions__burguer__hiden" >
+                <div id="functions__burguer__inner">
+                    <div id="add__group" class="menu__buttons">
+                        <i class="fa-solid fa fa-plus"></i>
+                        <h3>Add Group</h3>
+                    </div>
+                    <div id="add__task" class="menu__buttons">
+                        <i class="fa-solid fa fa-plus"></i>
+                        <h3>Add task</h3>
+                    </div>
+                    <div id="search__task" class="menu__buttons">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <h3>Search task</h3>
+                    </div>
+                    <div id="get__for__priority" class="menu__buttons">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <h3>Get for priority</h3>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </header>
+
+    <section id="callendar__container">
+        <div id="main__callendar">
+
+        </div>
+    </section>
+
+    <section id="task__group__container">
+            <details class="task__group">
+                <summary>GROUP 1</summary>
+                <div class="group__content">
+                    <p>task 1 content</p>
+                </div>
+            </details>
+
+            <details class="task__group">
+                <summary>GROUP 2</summary>
+                <div class="group__content">
+                    <ul>
+                        <li>task 2-1</li>
+                        <li>task 2-2</li>
+                        <li>task 2-3</li>
+                    </ul>
+                </div>
+                
+            </details>
+    </section>
+
+    <section id="blur__section" class="hide">
+        <div id="blur__background">
+
+        </div>
+        <div>
+            <i id="blur__section--X" class="fa-solid fa-xmark"></i>  
+        </div>
+
+        <div id="blur__content__container">
+            <div id="blur__content">
+                <form action="">
+                    <div id="add__gruop__input--cont" class="inputs__container">
+                        <div id="add__group__inner">
+                            <h2>Add Group</h2>
+                            <label for="group-name">Ingresa el nombre para este grupo de tareas</label>
+                            <input id="add__group__input" class="blur__inputs" type="text" name="group-name">
+                            <input id="add__group__btn" type="button" value="Guardar">
+                        </div>
+                    </div>
+                    <div id="add__task__input--cont" class="inputs__container hide">
+                        
+                    </div>
+                    <div id="search__task__input--cont" class="inputs__container hide">
+                        
+                    </div>
+                    <div id="get__for__priority__input--cont" class="inputs__container hide">
+                        
+                    </div>
+    
+                </form>
+            </div>
+        </div>
+
+    </section>
+    <footer id="footer">
+        <div id="weather__container">
+
+        </div>
+        <div id="news__container">
+
+        </div>
+    </footer>
+</body>
+</html>

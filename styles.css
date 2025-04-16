@@ -74,16 +74,36 @@
     margin: 0 auto;
     height: 30dvh;
     background-color: rgb(183, 47, 47);
+
+}
+.task__group__cont--empty{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .task__group, .task__group summary{
     padding: 5px;
     margin: 2px;
     background-color: beige;
 }
+.task__group summary{
+    display: flex ;
+    justify-content: space-between;
+}
 .group__content{
     margin-left: 25px;
 }
-
+.task__group__div__container{
+    height: 25px;
+    width: 100%;
+    background-color: aquamarine;
+}
+.notice-message{
+    color: #000000;
+    width: 60%;
+    text-align: center;
+    margin: 0 auto;
+}
 /*----- END TASK GROUPS STYLES-----*/
 /*----- FOOTER STYLES-----*/
 #footer{

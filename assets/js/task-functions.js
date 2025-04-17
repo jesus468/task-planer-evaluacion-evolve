@@ -1,6 +1,4 @@
-/*export function setGroupsFromLocal(){
-
-}*/
+// --------------- FUNCTION FOR GROUPS --------------- // 
 export function generateText(typeText, Content, container){
     const notice = document.createElement(typeText);
     notice.textContent=Content;
@@ -35,3 +33,31 @@ export function generateInputs(inputType , container){
         //const inp = console.log('este es el espacio para crear el beta');
     }
 }
+// --------------- END FUNCTION FOR GROUPS --------------- // 
+
+
+// --------------- FUNCTION FOR CALLENDAR --------------- // 
+export function createCallendar(dat, yearDom, monthDom){
+    
+    //crear el calendario para el mes actual
+    const today = moment(dat);
+    //colocar el año en el DOM;
+    const yearTitle = yearDom.children[0];
+    yearTitle.textContent=today.get('year');
+    console.log(yearTitle);
+    //colocar el mes en el DOM;
+    const monthTitle = monthDom.children[0];
+    monthTitle.textContent= today.format('MMMM');
+    console.log(monthTitle);
+
+    //ponerme al primer dia del mes
+    today.set('date', 1);
+
+    //dias que tiene el mes
+    const fecha2 = moment(today);
+    fecha2.add( 1,'month');
+    const mounthDays = fecha2.diff(today, 'days') 
+
+    //crear callendario
+}
+// --------------- END FUNCTION FOR CALLENDAR --------------- // 

@@ -2,14 +2,19 @@ console.log('main')
 // ------------- DOM ELEMENTS -------------//
 const burguerBtn = document.getElementById('burguer__nav');
 const menuContent = document.getElementById('functions__burguer__container');
+
 const blurSect = document.getElementById('blur__section');
 const xBlurBtn = document.getElementById('blur__section--X');
+
 const addGroupBtn = document.getElementById('add__group__btn');
 const menuButtonsArray = document.querySelectorAll('.menu__buttons');
 const groupsContainer = document.getElementById('task__group__container');
 const addGroupInner = document.getElementById('add__group__inner');
 
+const callendarYear = document.getElementById('year__container');
+const callendarmonth = document.getElementById('month__container');
 // ------------- END DOM ELEMENTS -------------//
+
 // ------------- GET CONTENT FROM LOCALSTORAGE -------------//
 //localStorage.clear();
 
@@ -23,13 +28,21 @@ if(!localStorage.getItem('task-groups')){
     for(let i=0 ;i<taskGroups.length; i++){
         taskFuntions.createGroup(taskGroups[i] , groupsContainer);
     }
-
     validateTaskGroupContent();
 }
-
 // ------------- END GET CONTENT FROM LOCALSTORAGE -------------//
+
+// ------------- IMPORT -------------//
 //import from task-function
 import * as taskFuntions from './assets/js/task-functions.js';
+// ------------- END IMPORT -------------//
+
+
+// ------------- DATES / CALLENDAR -------------//
+const today = moment().format('YYYY-MM-DD');
+taskFuntions.createCallendar(today, callendarYear, callendarmonth);
+// ------------- END DATES / CALLENDAR -------------//
+
 
 // ------------- EVENT LISTENERS ------------//
 

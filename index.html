@@ -53,9 +53,21 @@
                 <h2></h2>
             </div>
             <div id="month__container">
+                <i id="month__back__arrow" class="fa-solid fa-square-caret-left"></i>
                 <h3></h3>
+                <i id="month__next__arrow" class="fa-solid fa-square-caret-right"></i>
+            </div>
+            <div id="days__week__container">
+                <div id="Mon" class="days__week__cell">L</div>
+                <div id="Tue" class="days__week__cell">M</div>
+                <div id="Wed" class="days__week__cell">X</div>
+                <div id="Thu" class="days__week__cell">J</div>
+                <div id="Fri" class="days__week__cell">V</div>
+                <div id="Sat" class="days__week__cell">S</div>
+                <div id="Sun" class="days__week__cell">D</div>
             </div>
             <div id="days__container">
+                
                 <div class="days__cell"></div>
                 <div class="days__cell"></div>
                 <div class="days__cell"></div>
@@ -116,13 +128,49 @@
 
         <div id="blur__content__container">
             <div id="blur__content">
-                <form action="">
+                <form id="form__add__group" class="hide" action="">
                     <div id="add__gruop__input--cont" class="inputs__container">
                         <div id="add__group__inner">
                             <h2>Add Group</h2>
                             <label for="group-name">Ingresa el nombre para este grupo de tareas</label>
                             <input id="add__group__input" class="blur__inputs" type="text" name="group-name">
                             <input id="add__group__btn" type="button" value="Guardar">
+                        </div>
+                    </div>
+                    <div id="add__task__input--cont" class="inputs__container hide">
+                        
+                    </div>
+                    <div id="search__task__input--cont" class="inputs__container hide">
+                        
+                    </div>
+                    <div id="get__for__priority__input--cont" class="inputs__container hide">
+                        
+                    </div>
+    
+                </form>
+
+                <form id="form__add__task" class="hide" action="">
+                    <div id="add__task__input--cont" class="inputs__container">
+                        <div id="add__task__inner">
+                            <h2>Add task</h2>
+                            <label for="task-name">Ingresa el nombre para esta tarea</label>
+                            <input id="add__task__input" class="blur__inputs" type="text" name="task-name">
+                            
+                            <label for="task-date">Fecha para la tarea</label>
+                            <input id="date__task__input" type="date" name="task-date" class="blur__inputs">
+
+                            <label for="groups-options">Selecciona un grupo para añadir la tarea</label>
+                            <select id="select__groups__task" class="blur__inputs" name="groups-options">
+                                <option value="default">selecciona</option>
+                                <option value="create__group">Nuevo grupo</option>
+                            </select>
+
+                            <div id="new__group__from__task__container" class="hide">
+                                <label for="new__group__from__task-input">Nombre para el nuevo grupo</label>
+                                <input id="new__group__from__task" class="blur__inputs" type="text" name="new__group__from__task-input">
+                            </div>
+                            
+                            <input id="add__task__btn" type="button" value="Guardar">
                         </div>
                     </div>
                     <div id="add__task__input--cont" class="inputs__container hide">

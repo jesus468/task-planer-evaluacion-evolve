@@ -72,23 +72,52 @@
 #year__container, #month__container{
     text-align: center;
 }
+#month__container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#days__week__container{
+    display: grid;
+    grid-template-rows: 15px;
+    grid-template-columns: repeat(7, 1fr);
+}
 #days__container{
     height: 100%;
     display: grid;
     grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(7,1fr);
 }
+.days__week__cell{
+    text-align: center;
+    font-size: 15px;
+
+}
 .days__cell{
     background: #FFFFFF;
     border: 1px solid red;
     margin: 2px;
+    /*display: none;*/
+}
+#today-day{
+    border: 2px solid green;
+}
+.previous__days{
+    background-color: rgb(45, 45, 202);
+    /*opacity: .6;
+    z-index: 0;
+    /*display: block;*/
+}
+.next__days{
+    /*display: block;*/
 }
 /*----- END CALLENDAR STYLES-----*/
 /*----- TASK GROUPS STYLES-----*/
 #task__group__container{
     width: 90%;
     margin: 0 auto;
-    height: 30dvh;
+    margin-bottom: 7dvh;
+    min-height: 30dvh;
     background-color: rgb(183, 47, 47);
 
 }
@@ -97,12 +126,18 @@
     justify-content: center;
     align-items: center;
 }
+.task{
+    margin-left: 10%;
+    width: 80%;
+    background-color: rgb(194, 194, 164);
+}
+
 .task__group, .task__group summary{
     padding: 5px;
     margin: 2px;
     background-color: beige;
 }
-.task__group summary{
+.task__group summary, .task__content__container{
     display: flex ;
     justify-content: space-between;
 }

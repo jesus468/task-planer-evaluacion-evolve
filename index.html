@@ -47,76 +47,78 @@
         </div>
     </header>
 
-    <section id="callendar__container">
-        <div id="main__callendar">
-            <div id="year__container">
-                <h2></h2>
+    <div id="main__cont">
+        <section id="callendar__container">
+            <div id="main__callendar">
+                <div id="year__container">
+                    <h2></h2>
+                </div>
+                <div id="month__container">
+                    <i id="month__back__arrow" class="fa-solid fa-square-caret-left"></i>
+                    <h3></h3>
+                    <i id="month__next__arrow" class="fa-solid fa-square-caret-right"></i>
+                </div>
+                <div id="days__week__container">
+                    <div id="Mon" class="days__week__cell">L</div>
+                    <div id="Tue" class="days__week__cell">M</div>
+                    <div id="Wed" class="days__week__cell">X</div>
+                    <div id="Thu" class="days__week__cell">J</div>
+                    <div id="Fri" class="days__week__cell">V</div>
+                    <div id="Sat" class="days__week__cell">S</div>
+                    <div id="Sun" class="days__week__cell">D</div>
+                </div>
+                <div id="days__container">
+                    
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                    <div class="days__cell"></div>
+                </div>
+                <!--crear el grid-->
             </div>
-            <div id="month__container">
-                <i id="month__back__arrow" class="fa-solid fa-square-caret-left"></i>
-                <h3></h3>
-                <i id="month__next__arrow" class="fa-solid fa-square-caret-right"></i>
-            </div>
-            <div id="days__week__container">
-                <div id="Mon" class="days__week__cell">L</div>
-                <div id="Tue" class="days__week__cell">M</div>
-                <div id="Wed" class="days__week__cell">X</div>
-                <div id="Thu" class="days__week__cell">J</div>
-                <div id="Fri" class="days__week__cell">V</div>
-                <div id="Sat" class="days__week__cell">S</div>
-                <div id="Sun" class="days__week__cell">D</div>
-            </div>
-            <div id="days__container">
-                
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-                <div class="days__cell"></div>
-            </div>
-            <!--crear el grid-->
-        </div>
-    </section>
-
-    <section id="task__group__container">
-    </section>
+        </section>
+    
+        <section id="task__group__container">
+        </section>
+    </div>
 
     <section id="blur__section" class="hide">
         <div id="blur__background">
@@ -184,16 +186,51 @@
                     </div>
     
                 </form>
+
+                <form id="form__search__task" class="hide" action="">
+                    <div id="search__task___input--cont" class="inputs__container hide">
+                        <div id="search__task__inner">
+                            <h4>search</h4>
+                        </div>
+                    </div>
+                </form>
+
+                <form id="form__get__for__priority" class="hide" action="">
+                    <div id="get__for__priority___input--cont" class="inputs__container">
+                        <div id="get__for__priority__inner">
+                            <label for="select-priority">Selecciona una prioridad</label>
+                            <select name="select-priority" id="priority-select">
+                                <option value="task__Urgente">Urgente</option>
+                                <option value="task__Alta">Alta</option>
+                                <option value="task__Media">Media</option>
+                                <option value="task__Baja">Baja</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="days__task__container" class="hide">
+                    <div id="days__task">
+                        <h2>TAREAS</h2>
+                        <h4>No hay tareas para este dia</h4>
+                    </div>
+                </div>
             </div>
         </div>
 
     </section>
     <footer id="footer">
         <div id="weather__container">
-
         </div>
         <div id="news__container">
-
+            <h2 style="color: antiquewhite;">Noticias</h2>
+            <div id="news__inner" class="hide">
+                <div class="news__item"></div>
+                <div class="news__item"></div>
+                <div class="news__item"></div>
+                <div class="news__item"></div>
+                <div class="news__item"></div>
+            </div>
         </div>
     </footer>
 </body>

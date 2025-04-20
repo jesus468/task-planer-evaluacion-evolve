@@ -6,7 +6,8 @@ const menuContent = document.getElementById('functions__burguer__container');
 const blurSect = document.getElementById('blur__section');
 const xBlurBtn = document.getElementById('blur__section--X');
 const blurContentContainer = document.getElementById('blur__content__container');
-const blurContentsForms = blurContentContainer.firstElementChild.querySelectorAll('form')
+const blurContentsForms = blurContentContainer.firstElementChild.children;
+const daysTask = document.getElementById('days__task');
 
 const addGroupBtn = document.getElementById('add__group__btn');
 const menuButtonsArray = document.querySelectorAll('.menu__buttons');
@@ -21,8 +22,18 @@ const callendarYear = document.getElementById('year__container');
 const callendarmonth = document.getElementById('month__container');
 const callendarWeeks = document.getElementById('days__week__container');
 const callendarDays = document.getElementById('days__container');
+const allCallendarCell = document.querySelectorAll('.days__cell');
+
 const monthLeftArrow = document.getElementById('month__back__arrow');
 const monthRightArrow = document.getElementById('month__next__arrow');
+
+const footerCont = document.getElementById('footer');
+const footerInner = document.getElementById('news__inner');
+const TodayWeather = document.getElementById('weather__container');
+const newsContainer = document.getElementById('news__container');
+
+const todayGlobal = moment().format('YYYY-MM-DD');
+
 // ------------- END DOM ELEMENTS -------------//
 
 // ------------- GET CONTENT FROM LOCALSTORAGE -------------//
@@ -36,15 +47,12 @@ if(tasks){
     tasksArray = tasks;
 }
 
-console.log(tasksArray);
 // creating task groups 
 if(!localStorage.getItem('task-groups')){
     groupsContainer.classList.add('task__group__cont--empty');
     taskFuntions.generateText('h3', 'no hay grupos de tareas aun', groupsContainer);
 }else{
-
     groupsContainer.classList.remove('task__group__cont--empty');
-
     for(let i=0 ;i<taskGroups.length; i++){
         //agregando las tareas a la seccion de grupos de tareas
         taskFuntions.createGroup(taskGroups[i] , groupsContainer);
@@ -53,19 +61,16 @@ if(!localStorage.getItem('task-groups')){
         taskFuntions.createGroupForTask(taskGroups[i] , selectTaskGroup);
 
         //validando si grupo tiene tareas, y creandolas
-
-        console.log(tasksArray[i]);
         if(tasksArray[i][0].name){
             for(let j=0 ; j<tasksArray[i].length; j++){
                 //console.log('yes', i);
                 //console.log(groupsContainer.children[i], 'container ?')
-                taskFuntions.createTaskDOM(tasksArray[i][j], groupsContainer.children[i])
+                taskFuntions.createTaskDOM(tasksArray[i][j], groupsContainer.children[i],todayGlobal)
             }
         }
     }
     validateTaskGroupContent();
     setTaskTrashEvent()
-    //localStorage.setItem('task', JSON.stringify(tasksArray));
 }
 // ------------- END GET CONTENT FROM LOCALSTORAGE -------------//
 
@@ -76,9 +81,17 @@ import * as taskFuntions from './assets/js/task-functions.js';
 
 
 // ------------- DATES / CALLENDAR -------------//
-const todayGlobal = moment().format('YYYY-MM-DD');
 let today = moment().format('YYYY-MM-DD');
 taskFuntions.createCallendar(todayGlobal, today, callendarYear, callendarmonth, callendarWeeks, callendarDays);
+
+//poniendo las tareas en el calendario
+const callendarToday = document.getElementById('today-day');
+taskFuntions.setTaskOnCallendar(tasksArray, taskGroups,todayGlobal, callendarToday);
+
+//poniendo los climas en el calendario
+taskFuntions.getWeather(TodayWeather, callendarToday,todayGlobal, callendarmonth);
+taskFuntions.getNews(footerInner);
+
 // ------------- END DATES / CALLENDAR -------------//
 
 
@@ -90,53 +103,60 @@ burguerBtn.addEventListener('click', ()=>{
 xBlurBtn.addEventListener('click', ()=>{
     blurSect.classList.add('hide');
     
-    console.log(blurContentsForms);
-    taskFuntions.hideForms(blurContentsForms);
+    taskFuntions.hideForms(blurContentsForms, daysTask);
 });
 addGroupBtn.addEventListener('click',()=>{
     const input = document.getElementById('add__group__input');
    
     if(validateInput(input.value, addGroupInner)){
-        //obtengo los datos para que esten actualizados
-        let taskGroups = JSON.parse(localStorage.getItem('task-groups'));
+        taskGroups = JSON.parse(localStorage.getItem('task-groups'))
+        if(taskFuntions.isRepeatedGroup(input.value , taskGroups)){
+            console.log('es 0');
+            console.log(taskFuntions.isRepeatedGroup);
+            //obtengo los datos para que esten actualizados
+            let taskGroups = JSON.parse(localStorage.getItem('task-groups'));
 
-        //creo el grupo y oculto el blur
-        console.log(validateInput(input.value));
-        taskFuntions.createGroup(input.value, groupsContainer);
-        
-        //actualizar los grupos en el select
-        taskFuntions.createGroupForTask(input.value , selectTaskGroup);
-        
-        blurSect.classList.add('hide');
-        menuContent.classList.toggle('functions__burguer__hiden');
+            //creo el grupo y oculto el blur
+            taskFuntions.createGroup(input.value, groupsContainer);
+            
+            //actualizar los grupos en el select
+            taskFuntions.createGroupForTask(input.value , selectTaskGroup);
+            
+            blurSect.classList.add('hide');
+            menuContent.classList.toggle('functions__burguer__hiden');
 
-        //actualizarlo en el local, dependiendo si hay valores ya en el local
-        if(localStorage.getItem('task-groups')){
-            console.log('hay elementos en el local');
-            console.log(taskGroups);
+            //actualizarlo en el local, dependiendo si hay valores ya en el local
+            if(localStorage.getItem('task-groups')){
+                console.log('hay elementos en el local');
+                //console.log(taskGroups);
 
-            taskGroups.push(input.value);
-            localStorage.setItem('task-groups', JSON.stringify(taskGroups));
+                taskGroups.push(input.value);
+                localStorage.setItem('task-groups', JSON.stringify(taskGroups));
 
-            tasksArray.push([{}]);
-            localStorage.setItem('task', JSON.stringify(tasksArray));
+                tasksArray.push([{}]);
+                localStorage.setItem('task', JSON.stringify(tasksArray));
 
+            }else{
+                if(groupsContainer.children[0].classList.contains('notice-message')){
+                    groupsContainer.children[0].remove();
+                    groupsContainer.classList.remove('task__group__cont--empty');
+                }
+                let newTaskGroups = [];
+                console.log('NO hay elementos');
+                newTaskGroups.push(input.value);
+                localStorage.setItem('task-groups', JSON.stringify(newTaskGroups));
+                localStorage.setItem('task', JSON.stringify([[{}]]));
+            }        
+            input.value='';
+            taskFuntions.hideForms(blurContentsForms, daysTask);
         }else{
-            if(groupsContainer.children[0].classList.contains('notice-message')){
-                groupsContainer.children[0].remove();
-                groupsContainer.classList.remove('task__group__cont--empty');
-            }
-            let newTaskGroups = [];
-            console.log('NO hay elementos');
-            newTaskGroups.push(input.value);
-            localStorage.setItem('task-groups', JSON.stringify(newTaskGroups));
-            localStorage.setItem('task', JSON.stringify([[{}]]));
-        }        
-        input.value='';
-        taskFuntions.hideForms(blurContentsForms);
+            taskFuntions.generateText('h4','Ya existe un grupo con ese nombre', addGroupInner);
+        }
 
     }else{
         console.log(validateInput(input.value));
+        console.log('esta repetido');
+
     }
     validateTaskGroupContent()
 });
@@ -174,31 +194,43 @@ addTaskBtn.addEventListener('click', ()=>{
                             newGroupFromTaskCont.classList.remove('hide');
                             
                             if(newGroupFromTaskCont.getElementsByTagName('input')[0].value!==''){
-                                taskFuntions.createGroupForTask(newGroupFromTaskCont.getElementsByTagName('input')[0].value, selectTaskGroup);
-                                taskFuntions.createGroup(newGroupFromTaskCont.getElementsByTagName('input')[0].value, groupsContainer);
 
-                                if(localStorage.getItem('task-groups')){
-                                    console.log(taskGroups);
-                                    tasksArray.push([{}]);
-                                    taskGroups.push(newGroupFromTaskCont.getElementsByTagName('input')[0].value);
-                                    console.log('hay elementos en el local');
+                                taskGroups = JSON.parse(localStorage.getItem('task-groups'))
+                                console.log(newGroupFromTaskCont.getElementsByTagName('input')[0].value)
+                                if(taskFuntions.isRepeatedGroup(newGroupFromTaskCont.getElementsByTagName('input')[0].value , taskGroups)){
 
-                                    //subiendo al local, task y taskgroup (cuando hay elementos);
-                                    localStorage.setItem('task', JSON.stringify(tasksArray));
-                                    localStorage.setItem('task-groups', JSON.stringify(taskGroups));
-                                }else{
-                                    if(groupsContainer.children[0].classList.contains('notice-message')){
-                                        groupsContainer.children[0].remove();
-                                        groupsContainer.classList.remove('task__group__cont--empty');
+                                    taskFuntions.createGroupForTask(newGroupFromTaskCont.getElementsByTagName('input')[0].value, selectTaskGroup);
+                                    taskFuntions.createGroup(newGroupFromTaskCont.getElementsByTagName('input')[0].value, groupsContainer);
+
+                                    if(localStorage.getItem('task-groups')){
+                                        console.log(taskGroups);
+                                        tasksArray.push([{}]);
+                                        taskGroups.push(newGroupFromTaskCont.getElementsByTagName('input')[0].value);
+                                        console.log('hay elementos en el local');
+
+                                        //subiendo al local, task y taskgroup (cuando hay elementos);
+                                        localStorage.setItem('task', JSON.stringify(tasksArray));
+                                        localStorage.setItem('task-groups', JSON.stringify(taskGroups));
+                                    }else{
+                                        if(groupsContainer.children[0].classList.contains('notice-message')){
+                                            groupsContainer.children[0].remove();
+                                            groupsContainer.classList.remove('task__group__cont--empty');
+                                        }
+                                        let newTaskGroups = [];
+                                        console.log('NO hay elementos');
+                                        newTaskGroups.push(newGroupFromTaskCont.getElementsByTagName('input')[0].value);
+                                        localStorage.setItem('task-groups', JSON.stringify(newTaskGroups));
+                                        localStorage.setItem('task', JSON.stringify([[{}]]));
                                     }
-                                    let newTaskGroups = [];
-                                    console.log('NO hay elementos');
-                                    newTaskGroups.push(newGroupFromTaskCont.getElementsByTagName('input')[0].value);
-                                    localStorage.setItem('task-groups', JSON.stringify(newTaskGroups));
-                                    localStorage.setItem('task', JSON.stringify([[{}]]));
+                                    newGroupFromTaskCont.classList.add('hide');
+                                    newGroupFromTaskCont.getElementsByTagName('input')[0].value='';
+
+                                }else{
+                                    taskFuntions.generateText('h4','Ya existe un grupo con ese nombre', addTaskInner);
+
                                 }
-                                newGroupFromTaskCont.classList.add('hide');
-                                newGroupFromTaskCont.getElementsByTagName('input')[0].value='';
+
+                                
                             
                             }else{
 
@@ -208,32 +240,24 @@ addTaskBtn.addEventListener('click', ()=>{
                             
                             
                         }else{
-                            const newGroupFromTaskCont = document.getElementById('new__group__from__task__container');
-                            newGroupFromTaskCont.classList.add('hide');
+                            if(taskFuntions.isRepeatedTask(input.value, tasksArray, taskGroups, selectTaskGroup.value)){
+                                const newGroupFromTaskCont = document.getElementById('new__group__from__task__container');
+                                newGroupFromTaskCont.classList.add('hide');
 
-                            console.log('trabajaremos con este', selectTaskGroup.value);
-
-                            //creamos la tarea
-                            taskFuntions.createTask(todayGlobal,taskGroups, tasksArray, groupsContainer , selectTaskGroup.value, dateTaskInput.value, input.value);
+                                //creamos la tarea
+                                taskFuntions.createTask(todayGlobal, /*callendarToday*/taskGroups, tasksArray, groupsContainer , selectTaskGroup.value, dateTaskInput.value, input.value);
+                                
+                                taskFuntions.hideForms(blurContentsForms, daysTask);
+                                blurSect.classList.add('hide');
+                                menuContent.classList.toggle('functions__burguer__hiden');
+                        
+                                input.value='';
+                                dateTaskInput.value='';
+                                selectTaskGroup.value='Default';
+                            }else{
+                                taskFuntions.generateText('h4','Ya existe una tarea con ese nombre', addTaskInner);
+                            }
                             
-                            
-                            taskFuntions.hideForms(blurContentsForms);
-                            blurSect.classList.add('hide');
-                            menuContent.classList.toggle('functions__burguer__hiden');
-                    
-                            input.value='';
-                            dateTaskInput.value='';
-                            selectTaskGroup.value='Default';
-
-
-
-
-
-
-
-
-
-
                         }
                     }else{        
                         taskFuntions.generateText('h4', 'Selecciona un grupo', addTaskInner);
@@ -281,6 +305,9 @@ menuButtonsArray.forEach(el => el.children[1].addEventListener('click',(e)=>{
 
     }else if(e.target.textContent==='Get for priority'){
         console.log('clicado en ', e.target.textContent);
+
+        blurSect.classList.remove('hide');
+        taskFuntions.generateInputs(e.target.parentElement, blurContentContainer);
     }
 }));
 //for callendars
@@ -291,6 +318,11 @@ monthLeftArrow.addEventListener('click',()=>{
 
     taskFuntions.clearCalendar(callendarDays);
     taskFuntions.createCallendar(todayGlobal, previousMonth, callendarYear, callendarmonth, callendarWeeks, callendarDays)
+    taskFuntions.setTaskOnCallendar(tasksArray, taskGroups,todayGlobal, callendarToday);
+
+
+    taskFuntions.getWeather(TodayWeather, callendarToday,todayGlobal, callendarmonth);
+
 })
 monthRightArrow.addEventListener('click',()=>{
     let previousMonth = moment(today);
@@ -300,7 +332,36 @@ monthRightArrow.addEventListener('click',()=>{
 
     taskFuntions.clearCalendar(callendarDays);
     taskFuntions.createCallendar(todayGlobal, previousMonth, callendarYear, callendarmonth, callendarWeeks, callendarDays)
+    taskFuntions.setTaskOnCallendar(tasksArray, taskGroups,todayGlobal, callendarToday);   ;
+    taskFuntions.getWeather(TodayWeather, callendarToday,todayGlobal, callendarmonth);
+
 })
+//for every calendar cell
+allCallendarCell.forEach(el => 
+    el.addEventListener('click',(e)=>{
+        if(e.target.getAttribute('data-date')){
+            //muestro la seccion blanca sobre todo
+            blurSect.classList.remove('hide');
+            daysTask.children[1].classList.add('hide');
+            taskFuntions.generateInputs(e.target.parentElement, blurContentContainer);
+            
+            taskFuntions.getDaysTask(e.target, daysTask);
+            //puedo hacer es setear unos datos en cada celda, que si hay tarea guardo el indice de la tarea
+            //no , guardar un atributo, que sea nombregrupo-nombretarea, y que luego la pueda usar para encontrarla 
+        }else{
+            console.log('vacio celda');
+            
+        }
+    })
+
+)
+
+newsContainer.addEventListener('click', ()=>{
+    footerCont.classList.toggle('news__open-footer');
+    footerCont.children[0].classList.toggle('today__weater__open');
+    newsContainer.classList.toggle('news__open')
+    footerInner.classList.toggle('hide');
+});
 // ------------- END EVENT LISTENERS -------------//
 
 
@@ -342,8 +403,6 @@ function validateTaskGroupContent(){
                 e.target.parentElement.parentElement.remove();
                 
                 //quitar el elemento del select 
-                console.log(e.target.parentElement.textContent, 'el que buco');
-                console.log(selectTaskGroup.children[0].textContent, 'y este es el otro')
                 for(let i2=0; i2<selectTaskGroup.children.length;i2++){
                     if(e.target.parentElement.textContent===selectTaskGroup.children[i2].textContent){
                         selectTaskGroup.children[i2].remove();
@@ -358,8 +417,6 @@ function validateTaskGroupContent(){
                 console.log(tasksArray);
 
                 localStorage.setItem('task', JSON.stringify(tasksArray));
-
-
 
 
                 const updatedTaskGroups = taskGroups.filter(el => el!==e.target.parentElement.firstChild.textContent);
@@ -388,7 +445,6 @@ function setTaskTrashEvent(){
             taskGroups = JSON.parse(localStorage.getItem('task-groups'));
             tasksArray =JSON.parse(localStorage.getItem('task'));
 
-
             for(let j=0; j<taskGroups.length; j++){
                 //encuentro de que grupo es el trash clicado
                 if(taskGroups[j]===e.target.parentElement.parentElement.parentElement.children[0].textContent){
@@ -396,6 +452,9 @@ function setTaskTrashEvent(){
 
                     //entro a las tareas del grupo
                     console.log('esta aqui', tasksArray[j]);
+
+                    //reviso las clases que tiene el grupo, 
+                    console.log(e.target.parentElement.parentElement.children);
 
                     //todas las tareas, menos la que he clicado
                     const tareas = tasksArray[j];
@@ -408,6 +467,7 @@ function setTaskTrashEvent(){
                         tasksArray[j].push({});
                         //poner la papelera del grupo
                         console.log(e.target.parentElement.parentElement.parentElement.children[0].children[0].classList.remove('hide'))
+                        validateTaskGroupContent();
 
                         console.log('vacio');
                     }

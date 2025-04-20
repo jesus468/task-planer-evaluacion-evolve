@@ -4,8 +4,17 @@
     box-sizing: border-box;
 }
 
+@font-face{
+    font-family: inter;
+    src: url(/assets/typography/Inter/static/Inter_18pt-Medium.ttf);
+}
+@font-face{
+    font-family: roboto;
+    src: url(/assets/typography/Roboto/static/Roboto-Medium.ttf);
+}
 /*---------- MAIN STYLES ----------*/
 /*----- HEADER STYLES-----*/
+
 #header{
     display: flex;
     flex-direction: row;
@@ -28,7 +37,7 @@
     margin: 25px;
 }
 #functions__burguer__container{
-    background-color: rgb(203, 128, 128);
+    background-color: #007CB2;
     position: absolute;
     top: 0;
     right: 0;
@@ -39,10 +48,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 20;
 }
 #functions__burguer__inner{
     width: 80%;
-    height: 80%;
+    height: 50%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
 }
 .functions__burguer__hiden{
     margin: 25px;
@@ -54,6 +68,9 @@
     position: relative;
     z-index: 20;
     display: flex;
+    width: 60%;
+    text-align: center;
+    color: #FFFFFF;
 }
 .menu__buttons h3{
     position: relative;
@@ -61,13 +78,22 @@
 }
 /*----- END HEADER STYLES-----*/
 /*----- CALLENDAR STYLES-----*/
+h3, h4{
+    font-family: roboto;
+    font-weight: 100;
+    text-align: center;
+}
+#callendar__container{
+    border: 2px solid ;
+    padding: 10px;
+    background: linear-gradient(#1aa4df 20%, #00000091 );
+}
 #main__callendar{
     width: 90%;
     height: 50dvh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    background-color: grey;
 }
 #year__container, #month__container{
     text-align: center;
@@ -87,6 +113,7 @@
     display: grid;
     grid-template-rows: repeat(6, 1fr);
     grid-template-columns: repeat(7,1fr);
+    background-color: #00203B;
 }
 .days__week__cell{
     text-align: center;
@@ -94,32 +121,57 @@
 
 }
 .days__cell{
+    font-family: inter;
     background: #FFFFFF;
-    border: 1px solid red;
     margin: 2px;
+    position: relative;
+    display: flex;
+    align-items: end;
     /*display: none;*/
 }
 #today-day{
     border: 2px solid green;
 }
 .previous__days{
-    background-color: rgb(45, 45, 202);
-    /*opacity: .6;
-    z-index: 0;
+    background-color: rgb(203, 203, 203);
+    opacity: .5;
+    /*z-index: 0;
     /*display: block;*/
 }
-.next__days{
-    /*display: block;*/
+.weather__cell__img{
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 110%;
+    background: radial-gradient( rgb(60, 180, 236) 5%, #ffffff00 70%);
+}
+.task__Urgente{
+    background: radial-gradient(farthest-corner at 4px 4px,  rgb(255, 255, 255) 55%, rgb(255, 0, 0));
+}
+.task__Alta{
+    background: radial-gradient(farthest-corner at 4px 4px, rgb(255, 255, 255) 55%, orange);
+}
+.task__Media{
+    background: radial-gradient(farthest-corner at 4px 4px, rgb(255, 255, 255) 55%, rgb(119, 145, 3));
+}
+.task__Baja{
+    background: radial-gradient(farthest-corner at 4px 4px, rgb(255, 255, 255) 55%, green);
 }
 /*----- END CALLENDAR STYLES-----*/
 /*----- TASK GROUPS STYLES-----*/
 #task__group__container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 90%;
     margin: 0 auto;
     margin-bottom: 7dvh;
     min-height: 30dvh;
-    background-color: rgb(183, 47, 47);
-
+    background-color: rgb(255, 255, 255);
+}
+.task__group{
+    width: 80%;
 }
 .task__group__cont--empty{
     display: flex;
@@ -129,13 +181,22 @@
 .task{
     margin-left: 10%;
     width: 80%;
-    background-color: rgb(194, 194, 164);
+    border-top: 1px solid #1aa4df;
+    border-bottom: 1px solid #1aa4df;
+    padding: 7px;
+}
+.task__group{
+    border: 2px solid #1aa4df;
+}
+.task__group summary{
+    border-bottom: 2px solid #1aa4df;
+
 }
 
 .task__group, .task__group summary{
     padding: 5px;
     margin: 2px;
-    background-color: beige;
+
 }
 .task__group summary, .task__content__container{
     display: flex ;
@@ -164,16 +225,65 @@
     width: 100%;
     display: flex;
     flex-direction: row;
+    transition: all ease-in-out .7s;
+
 }
 #weather__container, #news__container{
     width: 50%;
     height: 100%;
+    transition: all ease-in-out .7s;
+
 }
 #weather__container{
-    background-color: greenyellow;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgb(60, 175, 241), #FFFFFF 80%);
 }
 #news__container{
-    background-color: blue;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #007CB2;
+}
+#news__container h2{
+    text-align: center;
+}
+.news__open-footer{
+    height: 75dvh !important;
+}
+.news__open{
+    width: 100% !important;
+}
+.today__weater__open{
+    width: 0 !important;
+    padding: 0 !important;
+}
+#news__inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80%;
+    flex-direction: column;
+}
+#news__inner a{
+    color: #f1f1f1;
+    text-decoration: none;
+    font-size: 12px;
+}
+.news__item{
+    width: 80%;
+    height: 35px;
+    margin: 5px;
+    overflow: scroll;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    border-radius: 5px;
 }
 /*----- END FOOTER STYLES-----*/
 
@@ -183,7 +293,7 @@
 /*---------- FUNCTIONS STYLES ----------*/
 /*----- BLUR SECTION STYLES-----*/
 #blur__background{
-    z-index: 10;
+    z-index: 30;
     top: 0;
     left: 0;
     position: fixed;
@@ -213,9 +323,16 @@
     align-items: center;
 }
 #blur__content{
-    background-color: beige;
+    background-color: #007CB2;
     width: 90%;
     height: 80%;
+}
+#blur__content h2, #blur__content label{
+    color: #f1f1f1;
+}
+#blur__content h2{
+    font-family: inter;
+
 }
 #blur__content form{
     width: 100%;
@@ -238,8 +355,132 @@
 .blur__inputs{
     width: 100%;
 }
+#days__task__container{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#days__task{
+    height: 50%;
+    width: 80%;
+}
+#days__task h2{
+    text-align: center;
+}
+.day__task__container{
+    margin: 20px;
+
+}
+.view__task__container{
+    display: flex;
+    justify-content: space-between;
+}
 #add__group__btn{
 
 }
 /*----- END BLUR SECTION STYLES-----*/
 /*---------- END STYLES ----------*/
+
+
+/*---------- MEDIA QUERIES ----------*/
+@media (min-width: 480px) and (max-width: 769px) {
+    #callendar__container{
+        width: 80%;
+        margin: 0 auto;
+    }
+    #logo__container img{
+        width: 80%;
+    }
+    #functions__burguer__inner{
+        width: 100%;
+    }
+    #burguer__nav i{
+        font-size: 25px;
+    }
+    .menu__buttons{
+        width: auto;
+    }
+    #weather__container{
+        padding: 0 15%;
+    }
+    .weather__cell__img{
+        width: 80%;
+    }
+    summary{
+        font-size: 22px;
+    }
+}
+@media (min-width: 769px) and (max-width:1025px) {
+    #main__cont{
+        display: flex;
+    }
+    #callendar__container{
+        width: 50%;
+        height: 100%;
+    }
+    #task__group__container{
+        border: #007CB2 1px solid;
+        margin: 0;
+        width: 50%;
+    }
+    #logo__container img{
+        width: 50%;
+    }
+    #functions__burguer__inner{
+        width: 100%;
+    }
+    #burguer__nav i{
+        font-size: 25px;
+    }
+    .menu__buttons{
+        width: auto;
+    }
+    #weather__container{
+        padding: 0 15%;
+    }
+    .weather__cell__img{
+        width: 80%;
+    }
+    summary{
+        font-size: 22px;
+    }
+}
+@media (min-width: 1025px) {
+    #main__cont{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 70dvh;
+    }
+    #callendar__container{
+        width: 50%;
+        height: 100%;
+    }
+    #task__group__container{
+        border: #007CB2 1px solid;
+        margin: 0;
+        width: 50%;
+    }
+    #logo__container img{
+        width: 50%;
+    }
+    #functions__burguer__inner{
+        width: 100%;
+    }
+    #burguer__nav i{
+        font-size: 25px;
+    }
+    .menu__buttons{
+        width: auto;
+    }
+    #weather__container{
+        padding: 0 15%;
+    }
+    .weather__cell__img{
+        width: 80%;
+    }
+    summary{
+        font-size: 22px;
+    }
+}

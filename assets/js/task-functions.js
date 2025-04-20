@@ -53,47 +53,52 @@ export function createGroupForTask (groupName, container){
     //summaryTag.append(trash)
     container.append(optionTag);
 }
-export function hideForms(formsCont){
-    formsCont.forEach(el => el.classList.add('hide'));
+export function hideForms(formsCont, taskOnDays){
+    for (let i=0; i<formsCont.length;i++){
+        formsCont[i].classList.add('hide');
+    }   
+
+    if(taskOnDays.children.length>2){
+        for(let j = taskOnDays.children.length-1; j>1; j--){
+            console.log(taskOnDays.children[j]);
+            taskOnDays.children[j].remove();
+        }
+    }else{
+        taskOnDays.children[1].classList.add('hide');
+    }
 }
-export function generateInputs(parent , container){
+export function generateInputs(parent , container){  
     const parentId = parent.id;
+
     if(parentId==='add__group'){
-        //console.log('el de group');
-        //console.log(parentId);
         console.log('container', container.firstElementChild.children[0].classList.remove('hide'));
     }else if(parentId==='add__task'){
-        //console.log('el de task ')
         console.log('container', container.firstElementChild.children[1].classList.remove('hide'));
+    }else if(parentId==='get__for__priority'){
+        console.log('container', container.firstElementChild.children[3].classList.remove('hide'));
+    }else if(parentId==='days__container'){
+        console.log('container', container.firstElementChild.children[4].classList.remove('hide'));
     }
-    /*if(==='Add Group'){
-        //const inp = console.log('este es el espacio para crear el beta');
-    }*/
 }
 // --------------- END FUNCTION FOR GROUPS --------------- // 
 // --------------- FUNCTION FOR TASK --------------- // 
-export function createTask(today,taskGroup , arrayTask, container,taskGroupSelected, dateTask, nameTask){
+export function createTask(today, /*todayCallendarTag */taskGroup , arrayTask, container,taskGroupSelected, dateTask, nameTask){
     if(taskGroup){
-        console.log(taskGroup.indexOf(taskGroupSelected), 'indice del seleccionado');
-        console.log(arrayTask[taskGroup.indexOf(taskGroupSelected)])//=['name']=nameTask, ['date-task']=dateTask, ['priority']='?';
-        
+       //si el primer elemento esta vacio lo elimino
         if(!(arrayTask[taskGroup.indexOf(taskGroupSelected)][0].name)){
-            console.log(arrayTask[taskGroup.indexOf(taskGroupSelected)].shift());
+            arrayTask[taskGroup.indexOf(taskGroupSelected)].shift()
         }
+        //creo el objeto task
         arrayTask[taskGroup.indexOf(taskGroupSelected)].push({['name']:nameTask, ['dateTask']:dateTask, ['priority']:getPriority(today, dateTask)});
-
-
-        console.log(arrayTask, 'revisando el array, antes de subirlo');
-
-        //subir datos al local
-        localStorage.setItem('task', JSON.stringify(arrayTask));
-
+        
+        console.log(arrayTask);
+        
         //crearlos en el dom
-        console.log(container,'container');
-
-        //recorro el DOM en la parte de grupos para  saber donde insertar
         for(let i=0; i<container.children.length;i++){
             //console.log(container.children[i].children[0].textContent)
+
+            console.log(container.children[i].children[0].textContent, 'container childrens');
+            console.log(taskGroupSelected);
             if(container.children[i].children[0].textContent===taskGroupSelected){
                 //container.children[i].append('tarea');
                 console.log('insertar');
@@ -101,20 +106,37 @@ export function createTask(today,taskGroup , arrayTask, container,taskGroupSelec
                 //ocultar la papelera del grupo
                 container.children[i].children[0].children[0].classList.add('hide');
 
-                createTaskDOM(arrayTask[taskGroup.indexOf(taskGroupSelected)][arrayTask[taskGroup.indexOf(taskGroupSelected)].length-1], container.children[i]);
+                console.log('param1', arrayTask[taskGroup.indexOf(taskGroupSelected)][arrayTask[taskGroup.indexOf(taskGroupSelected)]]);
+                console.log('param2', container.children[i]);
+                console.log('param3', arrayTask[taskGroup.indexOf(taskGroupSelected)][arrayTask[taskGroup.indexOf(taskGroupSelected)].length-1]);
+                createTaskDOM(arrayTask[taskGroup.indexOf(taskGroupSelected)][arrayTask[taskGroup.indexOf(taskGroupSelected)].length-1]   ,  container.children[i], today );
             }
         }
+
+        //ordenar las fechas en el local
+        for(let j=0; j<arrayTask.length;j++){
+            console.log(arrayTask[j])
+            arrayTask[j].sort((a,b)=>(moment(a.dateTask) - moment(b.dateTask)))
+            console.log(arrayTask);
+            for(let k =0 ; k<arrayTask[j].length;k++){
+                
+                console.log(arrayTask[j][k]);
+            }
+        }
+        //subir datos al local
+        localStorage.setItem('task', JSON.stringify(arrayTask));
     }else{
         console.log('taskGroup vacio');
     }
 }
-export function createTaskDOM (task, container){
+export function createTaskDOM (task, container, today){
     //creating datails
     const detailTag = document.createElement('details');
     detailTag.classList.add('task');
     
     //creating summary (title)
     const summaryTag = document.createElement('summary');
+    summaryTag.classList.add('task__'+getPriority(today, task.dateTask));
     summaryTag.textContent = task.name;
 
     //creating date task
@@ -167,6 +189,44 @@ export function createTaskDOM (task, container){
             console.log(e.target);
         })
     })*/
+}
+export function isRepeatedGroup(input, local){
+    let countRepeted = 0;
+    console.log(input);
+
+    if(local){
+        for(let i=0;i<local.length;i++){
+            console.log(local[i]);
+            if(local[i]===input){
+                countRepeted++;
+            }
+        }
+    }
+    
+    console.log(countRepeted);
+    return countRepeted>0 ?  false : true;
+
+}
+export function isRepeatedTask(input, localTask, localGroup, selectGroup){
+    let countRepeted = 0;
+
+    if(localTask){
+        //conseguir el indice del grupo
+        for(let k =0; k<localGroup.length;k++){
+            if(localGroup[k]===selectGroup){
+                for(let j =0; j<localTask[k].length;j++){
+                    console.log(localTask[k][j]);
+                    console.log(input);
+                    if(localTask[k][j].name===input){
+                        countRepeted++;
+                    }
+                }           
+            }
+        }
+    }
+    console.log(countRepeted);
+    return countRepeted>0 ?  false : true;
+
 }
 // --------------- END FUNCTION FOR TASK --------------- // 
 // --------------- FUNCTION FOR CALLENDAR --------------- // 
@@ -228,6 +288,10 @@ export function clearCalendar(allCallendarDays){
     arrayCells.forEach(el => {
         el.classList.remove('previous__days');
         el.classList.remove('next__days');
+        el.classList.remove('task__Baja');
+        el.classList.remove('task__Media');
+        el.classList.remove('task__Alta');
+        el.classList.remove('task__Urgente');
         el.removeAttribute('data-date');
         el.removeAttribute('id');
         el.textContent='';
@@ -254,4 +318,188 @@ export function getPriority(todayDate, taskDate){
 
     return priority;
 }
+export function setTaskOnCallendar(localeTasks, localeGroups,todayOrigin, todayCallendarTag){
+    //console.log(localeTasks);
+    //console.log(moment(today).format('YYYY-MM-DD'));
+    let today = todayOrigin ;
+    let datesArrayOrg=[];
+    let datesDaysArrayOrg=[];
+    let taskCdArray=[];
+    let tasksArrayOrg=[];
+    let datesDaysArray, datesArray, aux;
+    //todas las tareas
+    for(let i = 0; i<localeTasks.length; i++ ){
+        for(let j = 0; j<localeTasks[i].length; j++){
+            let dateForTask = localeTasks[i][j].dateTask;
+            datesArrayOrg.push(moment(dateForTask));
+            tasksArrayOrg.push({'task':localeTasks[i][j], 'taskGp':i});
+            datesDaysArrayOrg.push(moment(localeTasks[i][j].dateTask).diff(moment(today), 'days'));
+        }
+    }
+
+    //creo estas variables para poder añadir el atributo task__cd
+    datesDaysArray = datesDaysArrayOrg; 
+    datesArray = datesArrayOrg;
+    aux = 0;
+
+    datesDaysArray.sort((a,b)=> a - b);
+    
+    datesArray.sort((a,b)=> a - b);
+    //moverme por el callendario desde la primera celda hasta la ultima
+    for(let k=0; k<todayCallendarTag.parentElement.children.length;k++){
+
+        for(let m = 0; m<datesArray.length;m++){
+            if(todayCallendarTag.parentElement.children[k].getAttribute('data-date')===datesArray[m].format('YYYY-MM-DD') ){
+                //crear y asignar el atributo task__cd a las celdas que contengan una o mas tareas
+                taskCdArray=[];
+                
+                for(let aux = 0; aux<tasksArrayOrg.length; aux++){
+                    if(todayCallendarTag.parentElement.children[k].getAttribute('data-date')===moment(tasksArrayOrg[aux].task.dateTask).format('YYYY-MM-DD')){
+                        
+                        //if ya contiene un task__cd, 
+                        if(todayCallendarTag.parentElement.children[k].getAttribute('task__cd')){
+                            //contiene ya una tarea
+                            taskCdArray.push(`${localeGroups[tasksArrayOrg[aux].taskGp]}-${tasksArrayOrg[aux].task.name}`);
+
+                        }else{
+                            //creando por primera vez
+                            taskCdArray=[];
+                            taskCdArray.push(`${localeGroups[tasksArrayOrg[aux].taskGp]}-${tasksArrayOrg[aux].task.name}`);
+                        }
+                        todayCallendarTag.parentElement.children[k].setAttribute('task__cd', taskCdArray);
+                    }
+                }
+                
+                
+                //console.log(tasksArrayOrg[aux], 'la del:', todayCallendarTag.parentElement.children[k].getAttribute('data-date'));
+                todayCallendarTag.parentElement.children[k].classList.add('task__'+getPriority(today, todayCallendarTag.parentElement.children[k].getAttribute('data-date')))
+            }else{
+                //console.log('no entra a poner clases');
+            }
+        }
+    }
+}
+export function getDaysTask(elm, cont){
+    //crear contenedores de las tareas
+    if(elm.getAttribute('task__cd')){
+
+    //funcionalidad
+    const separateTasks = elm.getAttribute('task__cd').split(',');
+    let separateGroupTasks ;
+    for(let i=0; i<separateTasks.length;i++){
+
+        const divTarea = document.createElement('div');
+        divTarea.classList.add('day__task__container')
+        const divTareaTask = document.createElement('div');
+        divTareaTask.classList.add('view__task__container');
+        const divTareaGroup = document.createElement('div');
+        divTareaGroup.classList.add('view__task__container');
+        const titleTask = document.createElement('h3');
+        const titleGroup = document.createElement('h3');
+        
+        const TaskP = document.createElement('p');
+        const GroupP = document.createElement('p');
+        
+        titleTask.textContent='Tarea';
+        titleGroup.textContent='Grupo';
+
+        separateGroupTasks = separateTasks[i].split('-');
+        //inserto el valor
+        TaskP.textContent=separateGroupTasks[1];
+        GroupP.textContent=separateGroupTasks[0];
+
+        cont.append(divTarea);
+        divTarea.append(divTareaGroup);
+        divTarea.append(divTareaTask);
+        divTareaGroup.append(titleGroup);
+        divTareaGroup.append(GroupP);
+        divTareaTask.append(titleTask);
+        divTareaTask.append(TaskP);
+    }
+    }else{
+        //hacer visible el texto que dice "no hay tareas para este dia"
+        cont.children[1].classList.remove('hide');
+    }
+}
 // --------------- END FUNCTION FOR CALLENDAR --------------- // 
+
+// --------------- FETCH --------------- //
+//++++++ WEATHER ++++++
+export async function getWeather(todayWeatherTag, todayCellOriginal, todayGlobal, callendarmonthTag) {
+    let todayCell = todayCellOriginal;
+    console.log('obteniendo clima');
+    try {
+        const response2 = await fetch('http://api.openweathermap.org/geo/1.0/direct?q={palencia}&appid=e78f29f6caa3eaa7b4f4032bcc7a39b7');
+        const data2 = await response2.json();
+
+        const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${data2[0].lat}&lon=${data2[0].lon}&appid=e78f29f6caa3eaa7b4f4032bcc7a39b7&units=metric`);
+        const data = await response.json();
+
+        //poner la nube para los 4 dias siguientes
+        //console.log(callendarmonthTag.children[1].textContent);
+        //console.log(moment(todayGlobal).format('MMMM'))
+
+        if(moment(todayGlobal).format('MMMM')===callendarmonthTag.children[1].textContent){
+            let auxDateWeather = 0;
+            for(let i = 0; i<data.list.length; i++){
+                if(data.list[i].dt_txt.slice(0,10)!==auxDateWeather){
+                    auxDateWeather = data.list[i].dt_txt.slice(0,10);
+
+                    const imgTagCell= document.createElement('img');
+                    imgTagCell.classList.add('weather__cell__img');
+                    imgTagCell.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}.png`);
+                    todayCell.append(imgTagCell);
+
+                    todayCell = todayCell.nextElementSibling;
+                }
+            }
+        }
+        
+        if(todayWeatherTag.children.length === 0){
+        
+            //poner la imagen del clima de hoy
+            const imgTag= document.createElement('img');
+            imgTag.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png`);
+
+            //poner la temperatura de hoy
+            const todayTemp= document.createElement('h3');
+            todayTemp.textContent= Math.round(data.list[0].main.temp)+'°C';
+
+            todayWeatherTag.append(todayTemp);
+            todayWeatherTag.append(imgTag);
+        }
+        
+
+    } catch (error) {
+        console.log(error.message);
+    }finally{
+        console.log('finalizado clima');
+    }
+
+    //funcion para poner el clima de hoy
+    
+    
+}
+export async function getNews(newsCont){
+    console.log('obteniendo noticias');
+    try {
+        const response = await fetch('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=eae15b71457c4aeda6a1c25ab0f44705');
+        const data = await response.json();
+
+
+        for(let i =0; i<newsCont.children.length;i++){
+            const enlace = document.createElement('a');
+            enlace.textContent = data.articles[i].title;
+            enlace.setAttribute('href', data.articles[i].url);
+
+            newsCont.children[i].append(enlace);
+        }
+        console.log(data);
+        console.log(newsCont.children);
+    } catch (error) {
+        console.log(error.message);
+    }finally{
+        console.log('termino get news');
+    }
+}
+// --------------- END FETCH --------------- // 

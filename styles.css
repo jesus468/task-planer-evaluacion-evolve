@@ -27,6 +27,22 @@
     width: 100%;
     margin: 25px;
 }
+#loader__cont{
+    background-color: #ffffff;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#loader__cont img{
+    width: 50%;
+    animation: loader 2s infinite;
+}
 #burguer__nav {
     position: absolute;
     z-index: 30;
@@ -324,7 +340,9 @@ h3, h4{
 #blur__content{
     background-color: #007CB2;
     width: 90%;
-    height: 50%;
+    min-height: 50%;
+    display: flex;
+    align-items: center;
 }
 #blur__content h2, #blur__content label{
     color: #f1f1f1;
@@ -332,6 +350,11 @@ h3, h4{
 #blur__content h2{
     font-family: inter;
 
+}
+#get__for__priority__result__container h3,
+#get__for__priority__result__container h4,
+#get__for__priority__result__container p{
+    color: #e3dede;
 }
 #blur__content form{
     width: 100%;
@@ -369,6 +392,7 @@ h3, h4{
 }
 #days__task__container{
     height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -379,7 +403,7 @@ h3, h4{
 #days__task h2{
     text-align: center;
 }
-#days__task h3 , #days__task p{
+#days__task h3 , #days__task p, #days__task h4{
     color: #f1f1f1;
 }
 .day__task__container{
@@ -390,12 +414,24 @@ h3, h4{
     display: flex;
     justify-content: space-between;
 }
-#add__group__btn{
-
+.priority__task__container{
+    border: 1px solid #f1f1f1;
+    margin: 7px;
+    padding: 15px;
+    border-radius: 5px;
 }
 /*----- END BLUR SECTION STYLES-----*/
 /*---------- END STYLES ----------*/
 
+@keyframes loader{
+    0%{
+        opacity: 0;
+    }50%{
+        opacity: 1;
+    }100%{
+        opacity: 0;
+    }
+}
 
 /*---------- MEDIA QUERIES ----------*/
 @media (min-width: 480px) and (max-width: 769px) {
@@ -409,6 +445,10 @@ h3, h4{
     #functions__burguer__inner{
         width: 100%;
     }
+    #blur__content form{
+        width: 70%;
+        margin: 0 auto;
+    }
     #burguer__nav i{
         font-size: 25px;
     }
@@ -419,7 +459,7 @@ h3, h4{
         padding: 0 15%;
     }
     .weather__cell__img{
-        width: 80%;
+        width: 60%;
     }
     summary{
         font-size: 22px;
@@ -438,6 +478,10 @@ h3, h4{
         margin: 0;
         width: 50%;
     }
+    #blur__content form{
+        width: 60%;
+        margin: 0 auto;
+    }
     #logo__container img{
         width: 30%;
     }
@@ -450,11 +494,15 @@ h3, h4{
     .menu__buttons{
         width: auto;
     }
+    #days__task__container{
+        width: 50%;
+        margin: 0 auto;
+    }
     #weather__container{
         padding: 0 15%;
     }
     .weather__cell__img{
-        width: 80%;
+        width: 60%;
     }
     summary{
         font-size: 22px;
@@ -482,6 +530,17 @@ h3, h4{
     #functions__burguer__inner{
         width: 100%;
     }
+    #blur__content form{
+        width: 50%;
+        margin: 0 auto;
+    }
+    #days__task__container{
+        width: 50%;
+        margin: 0 auto;
+    }
+    #blur__content{
+        width: 60%;
+    }
     #burguer__nav i{
         font-size: 25px;
     }
@@ -492,7 +551,7 @@ h3, h4{
         padding: 0 15%;
     }
     .weather__cell__img{
-        width: 80%;
+        width: 50%;
     }
     #news__item{
         overflow:auto;

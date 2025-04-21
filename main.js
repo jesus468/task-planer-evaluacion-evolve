@@ -18,6 +18,10 @@ const addTaskBtn = document.getElementById('add__task__btn');
 const addTaskInner = document.getElementById('add__task__inner');
 const selectTaskGroup = document.getElementById('select__groups__task');
 
+const getForPriorityBtn = document.getElementById('get__for__priority__btn');
+const prioritySelect = document.getElementById('priority-select');
+const priorityResultContainer = document.getElementById('get__for__priority__result__container');
+
 const callendarYear = document.getElementById('year__container');
 const callendarmonth = document.getElementById('month__container');
 const callendarWeeks = document.getElementById('days__week__container');
@@ -160,7 +164,6 @@ addGroupBtn.addEventListener('click',()=>{
     }
     validateTaskGroupContent()
 });
-
 //que cuando se cree un grupo aqui, se suba al array task
 addTaskBtn.addEventListener('click', ()=>{
     const input = document.getElementById('add__task__input');
@@ -286,14 +289,23 @@ addTaskBtn.addEventListener('click', ()=>{
     setTaskTrashEvent()
     validateTaskGroupContent();
 })
+getForPriorityBtn.addEventListener('click', (e)=>{
+    tasks = JSON.parse(localStorage.getItem('task'));
+    tasksArray = tasks;
+    if(tasks){
+        tasksArray = tasks;
+    }
+
+    taskFuntions.getForPriority(todayGlobal,tasksArray, prioritySelect, priorityResultContainer)
+})
 // for menu buttons
 menuButtonsArray.forEach(el => el.children[1].addEventListener('click',(e)=>{
-    if(e.target.textContent==='Add Group'){
+    if(e.target.textContent==='Añadir grupo'){
         console.log('clicado en ', e.target.textContent);
         blurSect.classList.remove('hide');
         taskFuntions.generateInputs(e.target.parentElement, blurContentContainer);
 
-    }else if(e.target.textContent==='Add task'){
+    }else if(e.target.textContent==='Add Añadir tarea'){
         //console.log('clicado en ', e.target.textContent);
 
         blurSect.classList.remove('hide');
@@ -303,7 +315,7 @@ menuButtonsArray.forEach(el => el.children[1].addEventListener('click',(e)=>{
     }else if(e.target.textContent==='Search task'){
         console.log('clicado en ', e.target.textContent);
 
-    }else if(e.target.textContent==='Get for priority'){
+    }else if(e.target.textContent==='Obtener por prioridad'){
         console.log('clicado en ', e.target.textContent);
 
         blurSect.classList.remove('hide');

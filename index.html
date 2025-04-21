@@ -27,11 +27,11 @@
                 <div id="functions__burguer__inner">
                     <div id="add__group" class="menu__buttons">
                         <i class="fa-solid fa fa-plus"></i>
-                        <h3>Add Group</h3>
+                        <h3>Añadir grupo</h3>
                     </div>
                     <div id="add__task" class="menu__buttons">
                         <i class="fa-solid fa fa-plus"></i>
-                        <h3>Add task</h3>
+                        <h3>Añadir tarea</h3>
                     </div>
                     <div id="search__task" class="menu__buttons">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -39,7 +39,7 @@
                     </div>
                     <div id="get__for__priority" class="menu__buttons">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <h3>Get for priority</h3>
+                        <h3>Obtener por prioridad</h3>
                     </div>
                 </div>
                 
@@ -133,7 +133,7 @@
                 <form id="form__add__group" class="hide" action="">
                     <div id="add__gruop__input--cont" class="inputs__container">
                         <div id="add__group__inner">
-                            <h2>Add Group</h2>
+                            <h2>Añadir un grupo</h2>
                             <label for="group-name">Ingresa el nombre para este grupo de tareas</label>
                             <input id="add__group__input" class="blur__inputs" type="text" name="group-name">
                             <input id="add__group__btn" type="button" value="Guardar">
@@ -146,7 +146,7 @@
                         
                     </div>
                     <div id="get__for__priority__input--cont" class="inputs__container hide">
-                        
+                        <h3>obtener tareas por prioridad</h3>      
                     </div>
     
                 </form>
@@ -154,7 +154,7 @@
                 <form id="form__add__task" class="hide" action="">
                     <div id="add__task__input--cont" class="inputs__container">
                         <div id="add__task__inner">
-                            <h2>Add task</h2>
+                            <h2>Añadir tareas</h2>
                             <label for="task-name">Ingresa el nombre para esta tarea</label>
                             <input id="add__task__input" class="blur__inputs" type="text" name="task-name">
                             
@@ -174,7 +174,7 @@
                             
                             <input id="add__task__btn" type="button" value="Guardar">
                         </div>
-                    </div>
+                    </div><!--
                     <div id="add__task__input--cont" class="inputs__container hide">
                         
                     </div>
@@ -183,7 +183,7 @@
                     </div>
                     <div id="get__for__priority__input--cont" class="inputs__container hide">
                         
-                    </div>
+                    </div>-->
     
                 </form>
 
@@ -198,6 +198,7 @@
                 <form id="form__get__for__priority" class="hide" action="">
                     <div id="get__for__priority___input--cont" class="inputs__container">
                         <div id="get__for__priority__inner">
+                            <h3>Obtener por prioridad</h3>
                             <label for="select-priority">Selecciona una prioridad</label>
                             <select name="select-priority" id="priority-select">
                                 <option value="task__Urgente">Urgente</option>
@@ -205,7 +206,10 @@
                                 <option value="task__Media">Media</option>
                                 <option value="task__Baja">Baja</option>
                             </select>
+                            <input id="get__for__priority__btn" type="button" value="guardar">
                         </div>
+
+                        <div id="get__for__priority__result__container"> </div>
                     </div>
                 </form>
 

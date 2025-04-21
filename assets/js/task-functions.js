@@ -228,6 +228,83 @@ export function isRepeatedTask(input, localTask, localGroup, selectGroup){
     return countRepeted>0 ?  false : true;
 
 }
+export function getForPriority(today, locale, priority, resultCont){
+
+    if(locale){
+        console.log(priority.value);
+        console.log(resultCont);
+        console.log(locale);
+        console.log(today);
+        let urgentPriority = [];
+        let higthPriority = [];
+        let mediumPriority = [];
+        let lowPriority = [];
+
+        //quiero recorrer todas las tareas y organizarlas segun su prioridad
+        for(let i = 0 ; i<locale.length; i++){
+            for(let j = 0; j<locale[i].length; j++){
+                //confirmo que haya una tarea
+                if(locale[i][j].dateTask){
+                    //añado segun su prioridad
+                    if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Urgente'){
+                        urgentPriority.push(locale[i][j]);
+                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Alta'){
+                        higthPriority.push(locale[i][j]);
+                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Media'){
+                        mediumPriority.push(locale[i][j]);
+                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Baja'){
+                        lowPriority.push(locale[i][j]);
+                    }
+                    console.log(locale[i][j].dateTask , getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD')));
+                }
+            } 
+        }
+
+        //crearlo al DOM
+        if(priority.value==='task__Urgente'){
+            console.log('crear tareas urgente')
+
+            for(let k = 0; k<urgentPriority.length; k++){
+                const div = document.createElement('div');
+                div.classList.add('priority__task__container');
+
+                const taskTitle = document.createElement('h3');
+                taskTitle.textContent = urgentPriority[k].name;
+
+                const dateTaskPriorityContainer = document.createElement('div');
+
+                const dateTaskPriorityTitle = document.createElement('h4');
+                dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
+                
+                const dateTaskPriority = document.createElement('p');
+                dateTaskPriority.textContent = urgentPriority[k].dateTask;
+
+                resultCont.append(div);
+                div.append(taskTitle);
+                div.append(dateTaskPriorityContainer);
+                dateTaskPriorityContainer.append(dateTaskPriorityTitle);
+                dateTaskPriorityContainer.append(dateTaskPriority);
+            }
+        }else if(priority.value==='task__Alta'){
+            console.log('crear tareas alta')
+        }else if(priority.value==='task__Media'){
+            console.log('crear tareas media')
+        }else if(priority.value==='task__Baja'){
+            console.log('crear tareas baja')
+        }
+
+
+        //ya los tengo por prioridades, falta crearlo al DOM
+        console.log('urgente', urgentPriority );
+        console.log('alta', higthPriority );
+        console.log('media', mediumPriority );
+        console.log('baja', lowPriority );
+
+    }else{
+        console.log('no hay tareas que organizar');
+    }
+    
+}
 // --------------- END FUNCTION FOR TASK --------------- // 
 // --------------- FUNCTION FOR CALLENDAR --------------- // 
 export function createCallendar(today, dat, yearDom, monthDom, weeksCont, daysCont){

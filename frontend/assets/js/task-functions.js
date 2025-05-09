@@ -60,7 +60,6 @@ export function hideForms(formsCont, taskOnDays){
 
     if(taskOnDays.children.length>2){
         for(let j = taskOnDays.children.length-1; j>1; j--){
-            console.log(taskOnDays.children[j]);
             taskOnDays.children[j].remove();
         }
     }else{
@@ -95,13 +94,8 @@ export function createTask(today, /*todayCallendarTag */taskGroup , arrayTask, c
         
         //crearlos en el dom
         for(let i=0; i<container.children.length;i++){
-            //console.log(container.children[i].children[0].textContent)
-
-            console.log(container.children[i].children[0].textContent, 'container childrens');
-            console.log(taskGroupSelected);
             if(container.children[i].children[0].textContent===taskGroupSelected){
                 //container.children[i].append('tarea');
-                console.log('insertar');
 
                 //ocultar la papelera del grupo
                 container.children[i].children[0].children[0].classList.add('hide');
@@ -115,9 +109,9 @@ export function createTask(today, /*todayCallendarTag */taskGroup , arrayTask, c
 
         //ordenar las fechas en el local
         for(let j=0; j<arrayTask.length;j++){
-            console.log(arrayTask[j])
+
             arrayTask[j].sort((a,b)=>(moment(a.dateTask) - moment(b.dateTask)))
-            console.log(arrayTask);
+
             for(let k =0 ; k<arrayTask[j].length;k++){
                 
                 console.log(arrayTask[j][k]);

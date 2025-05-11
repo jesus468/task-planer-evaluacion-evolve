@@ -36,6 +36,11 @@ const allCallendarCell = document.querySelectorAll(".days__cell");
 const monthLeftArrow = document.getElementById("month__back__arrow");
 const monthRightArrow = document.getElementById("month__next__arrow");
 
+const changeLoginBtn = document.getElementById('login__change__btn');
+const loginSection = document.getElementById('login__form__cont');
+const singInSection = document.getElementById('sign__in__cont');
+const loginButonsSect = document.getElementById('login__buttons__cont');
+
 const footerCont = document.getElementById("footer");
 const footerInner = document.getElementById("news__inner");
 const TodayWeather = document.getElementById("weather__container");
@@ -352,6 +357,24 @@ newsContainer.addEventListener("click", () => {
   newsContainer.classList.toggle("news__open");
   footerInner.classList.toggle("hide");
 });
+
+//for logins
+changeLoginBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginSection.classList.toggle('login__sects--active');
+    singInSection.classList.toggle('login__sects--active');
+
+    const active = document.querySelector('.login__sects--active');
+    
+    if(active.id.startsWith('sig')){
+      loginButonsSect.children[0].textContent = 'Ya tienes una cuenta?';
+      loginButonsSect.children[1].children[0].value = 'Inicia sesion aqui';
+    }else{
+      loginButonsSect.children[0].textContent = 'No tienes una cuenta?';
+      loginButonsSect.children[1].children[0].value = 'Registrate';
+    }
+
+})
 // ------------- END EVENT LISTENERS -------------//
 
 // ------------- FUNCTIONS -------------//
@@ -438,7 +461,7 @@ function setTaskTrashEvent() {
 const loadTasks = async () => {
 
     try {
-        const response = await fetch(`${requestsURL}tasks/`);
+        const response = await fetch(`${requestsURL}tasks/`,{method:'GET'});
         const data = await response.json();
 
         globalData = data;

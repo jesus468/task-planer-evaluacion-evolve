@@ -247,7 +247,7 @@ h3, h4{
     align-items: center;
     flex-direction: column;
 }
-#login__form__cont{
+#login__form__cont, #sign__in__cont{
     width: 80%;
     text-align: center;
 }
@@ -257,7 +257,17 @@ h3, h4{
 }
 #login__buttons__cont{
     text-align: center;
+    padding: 25px;
 }
+
+.login__sects{
+    padding: 25px;
+    display: none;
+}
+.login__sects--active{
+    display: block;
+}
+
 /*----- END LOGIN STYLES-----*/
 /*----- FOOTER STYLES-----*/
 #footer{

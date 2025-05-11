@@ -7,6 +7,7 @@ const {createTaskValidation} = require('../validations/taskValidations')
 const taskController ={
     getTasks: [
         async (req, res) =>{
+            console.log('get task');
             try {
                 const data = await getAllTasks();
                 res.status(200).json(data);

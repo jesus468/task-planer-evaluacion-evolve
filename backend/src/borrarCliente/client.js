@@ -19,21 +19,9 @@ const taskData = {
     }
 ]
 }*/
-
-const taskData = {
-    nameGroup: 'super vacio',
-    taskGroup: []
-}
-
 const addTasks = async () => { 
     try {
-        const response = await fetch('http://localhost:3000/api/tasks/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(taskData)
-        });
+        const response = await fetch('http://localhost:3000/api/user/');
         const data = await response.json();
 
         data.length ===0 ? console.log('no hay datos', data) : console.log('hay datos' , data); 

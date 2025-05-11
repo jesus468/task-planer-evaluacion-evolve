@@ -1,9 +1,11 @@
 //importar modelos 
-const Task = require('../models/taskModels');
+//const { taskSchema , Task} = require('../models/taskModels');
+const {Task} = require('../config/dataBase');
 
 const getAllTasks = async () => {
     try {
         const res = await Task.find();
+        console.log(res);
         //console.log('Task successfully:', res);
         return res;
     } catch (error) {

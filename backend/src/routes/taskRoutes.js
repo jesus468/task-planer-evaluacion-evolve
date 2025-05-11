@@ -2,15 +2,17 @@ const express = require('express');
 const router = express.Router();
 //importar controladores
 const taskController = require('../controller/tasksController');
+const verifyToken = require('../middlewares/authMiddleware');
 
 router.get('/', taskController.getTasks);
 
-router.put('/:id', taskController.addTask);
+router.put('/:id', verifyToken, taskController.addTask);
 
-router.put('/delete/:id', taskController.deleteTask);
+router.put('/delete/:id', verifyToken,taskController.deleteTask);
 
-router.post('/group/', taskController.createGroup);
-router.delete('/group/:id', taskController.deleteGroup);
+router.post('/group/', verifyToken, taskController.createGroup);
+
+router.delete('/group/:id',  verifyToken, taskController.deleteGroup);
 
 
 

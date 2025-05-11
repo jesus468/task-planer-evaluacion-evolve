@@ -251,9 +251,14 @@ h3, h4{
     width: 80%;
     text-align: center;
 }
-#inputs__cont{
+#inputs__cont, #sing__in__form{
     display: flex;
     flex-direction: column;
+}
+#sing__in__form input{
+    text-align: center;
+    padding: 2px;
+    margin: 7px;
 }
 #login__buttons__cont{
     text-align: center;
@@ -503,6 +508,11 @@ h3, h4{
     summary{
         font-size: 22px;
     }
+
+
+    #login__form__cont, #sign__in__cont{
+        width: 50%;
+    }
 }
 @media (min-width: 769px) and (max-width:1025px) {
     #main__cont{
@@ -545,6 +555,10 @@ h3, h4{
     }
     summary{
         font-size: 22px;
+    }
+
+    #login__form__cont, #sign__in__cont{
+        width: 30%;
     }
 }
 @media (min-width: 1025px) {
@@ -597,5 +611,9 @@ h3, h4{
     }
     summary{
         font-size: 22px;
+    }
+
+    #login__form__cont, #sign__in__cont{
+        width: 20%;
     }
 }

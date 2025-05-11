@@ -40,6 +40,11 @@ const changeLoginBtn = document.getElementById('login__change__btn');
 const loginSection = document.getElementById('login__form__cont');
 const singInSection = document.getElementById('sign__in__cont');
 const loginButonsSect = document.getElementById('login__buttons__cont');
+const loginBtn = document.getElementById('login__btn');
+const singInBtn = document.getElementById('sing__in__btn');
+const singInForm = document.getElementById('sing__in__form');
+const loginForm = document.getElementById('login__form__cont');
+
 
 const footerCont = document.getElementById("footer");
 const footerInner = document.getElementById("news__inner");
@@ -374,6 +379,56 @@ changeLoginBtn.addEventListener('click', (e) => {
       loginButonsSect.children[1].children[0].value = 'Registrate';
     }
 
+});
+loginBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const loginInputs = loginForm.querySelectorAll('input');
+
+  let empty = 0;
+  
+  loginInputs.forEach( el => {
+    if(el.value===''){
+      empty++
+    }
+  });
+
+  if(empty>0){
+    taskFuntions.generateText("h4","No deben haber campos vacios",loginSection, e.target);
+  }else{
+    const newUser = {
+      email: loginInputs[0].value,
+      password: loginInputs[1].value,
+    }
+    login(newUser);
+  }
+});
+singInBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+
+  const formInputs = singInForm.querySelectorAll('input');
+  let empty = 0;
+  console.log(formInputs);
+  
+  formInputs.forEach( el => {
+    if(el.value===''){
+      empty++
+    }
+  });
+
+  console.log(empty);
+  if(empty>0){
+    taskFuntions.generateText("h4","No deben haber campos vacios",singInSection, e.target);
+  }else{
+    const newUser = {
+      name: formInputs[0].value,
+      secondName: formInputs[1].value,
+      email: formInputs[2].value,
+      password: formInputs[3].value,
+    }
+    createUser(newUser);
+  }
+
 })
 // ------------- END EVENT LISTENERS -------------//
 
@@ -456,10 +511,18 @@ function setTaskTrashEvent() {
 }
 
 
-
+const verifyRol = (rol) => {
+  const addGroups = document.getElementById('add__group');
+  const addtask = document.getElementById('add__task');
+  const allTrash = document.querySelectorAll('.fa-trash-can');
+  if(rol!=='admin'){
+    addGroups.style.display='none';
+    addtask.style.display='none';
+    allTrash.forEach(el => el.style.display='none')
+  }
+}
 
 const loadTasks = async () => {
-
     try {
         const response = await fetch(`${requestsURL}tasks/`,{method:'GET'});
         const data = await response.json();
@@ -489,7 +552,7 @@ const loadTasks = async () => {
     } catch (error) {
         console.log('Error pidiendo datos', error);       
     }finally{
-        
+      verifyRol('admin')
     }
 }
 const clearTasks = () => {
@@ -594,4 +657,51 @@ const deleteGroup = async (id) => {
       loadTasks();
     }
 }
+
+const createUser = async (userData) => {
+  console.log(userData);
+  try {
+        const response = await fetch(`${requestsURL}user/new`, {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+        const data = await response.json();
+        console.log('data del front', data);
+        
+    } catch (error) {
+        console.log('Error subiendo datos', error);       
+    }finally{
+      console.log('create user finished on front');
+    }
+}
+const login = async (userData) => {
+  console.log(userData);
+  try {
+        const response = await fetch(`${requestsURL}user/log`, {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        });
+        const data = await response.json();
+        console.log('data del front', data);
+        
+    } catch (error) {
+        console.log('Error subiendo datos', error);       
+    }finally{
+      console.log('create user finished on front');
+    }
+}
 // ------------- END FUNCTIONS -------------//
+/*const admin = {
+   name: 'juan',
+    secondName: 'de la vega',
+    email: 'juanjito@admin.com',
+    rol: 'admin',
+    password: 'juan1234',
+
+}*/

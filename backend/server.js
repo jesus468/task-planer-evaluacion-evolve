@@ -9,10 +9,10 @@ const connectDB = require('./src/config/dataBase');
 const port = 3000; 
 const app = express();
 
-
+/*
 app.use(express.json());
 app.use(cors());
-
+*/
 // rutas 
 
 app.use('/api/tasks', taskRoutes);

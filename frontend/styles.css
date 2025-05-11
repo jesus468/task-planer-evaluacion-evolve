@@ -6,11 +6,11 @@
 
 @font-face{
     font-family: inter;
-    src: url(/assets/typography/Inter/static/Inter_18pt-Medium.ttf);
+    src: url(/frontend/assets/typography/Inter/static/Inter_18pt-Medium.ttf);
 }
 @font-face{
     font-family: roboto;
-    src: url(/assets/typography/Roboto/static/Roboto-Medium.ttf);
+    src: url(/frontend/assets/typography/Roboto/static/Roboto-Medium.ttf);
 }
 /*---------- MAIN STYLES ----------*/
 /*----- HEADER STYLES-----*/
@@ -29,7 +29,7 @@
 }
 #loader__cont{
     background-color: #ffffff;
-    position: absolute;
+    position: fixed;
     z-index: 100;
     top: 0;
     left: 0;
@@ -54,7 +54,7 @@
 }
 #functions__burguer__container{
     background-color: #007CB2;
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
     height: 100dvh;
@@ -232,6 +232,33 @@ h3, h4{
     margin: 0 auto;
 }
 /*----- END TASK GROUPS STYLES-----*/
+
+/*----- LOGIN STYLES-----*/
+#login__cont{
+    width: 100dvw;
+    height: 100dvh;
+    position: fixed;
+    top:0 ;
+    left: 0;
+    background-color: #FFFFFF;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#login__form__cont{
+    width: 80%;
+    text-align: center;
+}
+#inputs__cont{
+    display: flex;
+    flex-direction: column;
+}
+#login__buttons__cont{
+    text-align: center;
+}
+/*----- END LOGIN STYLES-----*/
 /*----- FOOTER STYLES-----*/
 #footer{
     position: fixed;
@@ -371,6 +398,8 @@ h3, h4{
 }
 #get__for__priority__result__container{
     margin: 25px;
+    max-height: 50dvh;
+    overflow: scroll;
 }
 #get__for__priority__inner h3{
     color: #FFFFFF;

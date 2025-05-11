@@ -45,54 +45,14 @@ const todayGlobal = moment();
 
 // ------------- END DOM ELEMENTS -------------//
 
-// ------------- GET CONTENT FROM LOCALSTORAGE -------------//
-//localStorage.clear();
-
-let taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-let tasks = JSON.parse(localStorage.getItem("task"));
-let tasksArray = [];
-
-if (tasks) {
-  tasksArray = tasks;
-}
-
-// creating task groups
-if (!localStorage.getItem("task-groups")) {
-  groupsContainer.classList.add("task__group__cont--empty");
-  taskFuntions.generateText(
-    "h3",
-    "no hay grupos de tareas aun",
-    groupsContainer
-  );
-} else {
-  groupsContainer.classList.remove("task__group__cont--empty");
-  for (let i = 0; i < taskGroups.length; i++) {
-    //agregando las tareas a la seccion de grupos de tareas
-    taskFuntions.createGroup(taskGroups[i], groupsContainer);
-
-    //agregando a la seleccion de crear tareas
-    taskFuntions.createGroupForTask(taskGroups[i], selectTaskGroup);
-
-    //validando si grupo tiene tareas, y creandolas
-    if (tasksArray[i][0].name) {
-      for (let j = 0; j < tasksArray[i].length; j++) {
-        taskFuntions.createTaskDOM(
-          tasksArray[i][j],
-          groupsContainer.children[i],
-          todayGlobal
-        );
-      }
-    }
-  }
-  validateTaskGroupContent();
-  setTaskTrashEvent();
-}
-// ------------- END GET CONTENT FROM LOCALSTORAGE -------------//
+const requestsURL = "http://localhost:3000/api/"; 
 
 // ------------- IMPORT -------------//
 //import from task-function
 import * as taskFuntions from "./assets/js/task-functions.js";
 // ------------- END IMPORT -------------//
+
+let globalData ;
 
 // ------------- DATES / CALLENDAR -------------//
 let today = moment().format("YYYY-MM-DD");
@@ -107,12 +67,6 @@ taskFuntions.createCallendar(
 
 //poniendo las tareas en el calendario
 const callendarToday = document.getElementById("today-day");
-taskFuntions.setTaskOnCallendar(
-  tasksArray,
-  taskGroups,
-  todayGlobal,
-  callendarToday
-);
 
 //poniendo los climas en el calendario
 taskFuntions.getWeather(
@@ -127,6 +81,9 @@ taskFuntions.getNews(footerInner);
 
 // ------------- EVENT LISTENERS ------------//
 document.addEventListener("DOMContentLoaded", () => {
+
+  loadTasks();
+
   setTimeout(() => {
     loader.classList.add("hide");
   }, 2800);
@@ -140,15 +97,13 @@ xBlurBtn.addEventListener("click", () => {
 
   taskFuntions.hideForms(blurContentsForms, daysTask);
 });
-addGroupBtn.addEventListener("click", () => {
+addGroupBtn.addEventListener("click", (e) => {
   const input = document.getElementById("add__group__input");
 
-  if (validateInput(input.value, addGroupInner)) {
-    taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-    if (taskFuntions.isRepeatedGroup(input.value, taskGroups)) {
-      console.log(taskFuntions.isRepeatedGroup);
-      //obtengo los datos para que esten actualizados
-      let taskGroups = JSON.parse(localStorage.getItem("task-groups"));
+  if (validateInput(input.value, addGroupInner, e.target)) {
+
+    //taskGroups = JSON.parse(localStorage.getItem("task-groups"));
+    if (taskFuntions.isRepeatedGroup2(input.value, globalData)) {
 
       //creo el grupo y oculto el blur
       taskFuntions.createGroup(input.value, groupsContainer);
@@ -159,193 +114,123 @@ addGroupBtn.addEventListener("click", () => {
       blurSect.classList.add("hide");
       menuContent.classList.toggle("functions__burguer__hiden");
 
-      //actualizarlo en el local, dependiendo si hay valores ya en el local
-      if (localStorage.getItem("task-groups")) {
-
-        taskGroups.push(input.value);
-        localStorage.setItem("task-groups", JSON.stringify(taskGroups));
-
-        tasksArray.push([{}]);
-        localStorage.setItem("task", JSON.stringify(tasksArray));
-      } else {
-        if (groupsContainer.children[0].classList.contains("notice-message")) {
-          groupsContainer.children[0].remove();
-          groupsContainer.classList.remove("task__group__cont--empty");
-        }
-        let newTaskGroups = [];
-        newTaskGroups.push(input.value);
-        localStorage.setItem("task-groups", JSON.stringify(newTaskGroups));
-        localStorage.setItem("task", JSON.stringify([[{}]]));
+      const newGroup = {
+        nameGroup: input.value,
+        taskGroup : []
       }
+
+      createGroup(newGroup);
+
       input.value = "";
       taskFuntions.hideForms(blurContentsForms, daysTask);
     } else {
-      taskFuntions.generateText(
-        "h4",
-        "Ya existe un grupo con ese nombre",
-        addGroupInner
-      );
+      taskFuntions.generateText("h4","Ya existe un grupo con ese nombre",addGroupInner, e.target);
     }
-  } else {
-    console.log(validateInput(input.value));
   }
   validateTaskGroupContent();
 });
 //que cuando se cree un grupo aqui, se suba al array task
-addTaskBtn.addEventListener("click", () => {
+addTaskBtn.addEventListener("click", (e) => {
   const input = document.getElementById("add__task__input");
   const dateTaskInput = document.getElementById("date__task__input");
 
   //validando que no este vacio el input (name)
-  if (validateInput(input.value, addTaskInner)) {
+  if (validateInput(input.value, addTaskInner, e.target)) {
     //validando que no este vacio el date
-    if (validateInput(dateTaskInput.value, addTaskInner)) {
+    if (validateInput(dateTaskInput.value, addTaskInner, e.target)) {
       //validar que no sea menor al dia de hoy
-      if (
-        moment(dateTaskInput.value).format("YYYY-MM-DD") >
-        moment(todayGlobal).format("YYYY-MM-DD")
-      ) {
+      if (moment(dateTaskInput.value).format("YYYY-MM-DD") > moment(todayGlobal).format("YYYY-MM-DD")) {
         //validar que no sea mayor a 50 años
         const years50 = moment(todayGlobal);
         years50.add(50, "years");
-        if (
-          !(moment(dateTaskInput.value).format("YYYY") > years50.format("YYYY"))
-        ) {
+        if (!(moment(dateTaskInput.value).format("YYYY") > years50.format("YYYY"))) {
           //validar el option{
           if (selectTaskGroup.value !== "default") {
-
-            //para tener los datos actualizados, llamo a taskgroups y task del local
-            taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-            tasks = JSON.parse(localStorage.getItem("task"));
-            tasksArray = tasks;
-
+            
             if (selectTaskGroup.value === "create__group") {
-              const newGroupFromTaskCont = document.getElementById(
-                "new__group__from__task__container"
-              );
+
+              console.log('selecciono crear grupo');
+              //ya hay un grupo con ese nombre ?
+              console.log(globalData, 'trabajando aqui');
+
+              //el ya existe un grupo con ese nomrbre? 
+              globalData.forEach(group => console.log('nombre de los grupos', group.nameGroup));
+
+                
+              const newGroupFromTaskCont = document.getElementById("new__group__from__task__container");
               newGroupFromTaskCont.classList.remove("hide");
 
-              if (
-                newGroupFromTaskCont.getElementsByTagName("input")[0].value !==
-                ""
-              ) {
-                taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-                if (
-                  taskFuntions.isRepeatedGroup(
-                    newGroupFromTaskCont.getElementsByTagName("input")[0].value,
-                    taskGroups
-                  )
-                ) {
-                  taskFuntions.createGroupForTask(
-                    newGroupFromTaskCont.getElementsByTagName("input")[0].value,
-                    selectTaskGroup
-                  );
-                  taskFuntions.createGroup(
-                    newGroupFromTaskCont.getElementsByTagName("input")[0].value,
-                    groupsContainer
-                  );
+              
+              if (newGroupFromTaskCont.getElementsByTagName("input")[0].value !=="") {
+                //taskGroups = JSON.parse(localStorage.getItem("task-groups"));
+                if (taskFuntions.isRepeatedGroup2(newGroupFromTaskCont.getElementsByTagName("input")[0].value,taskGroups)) {
 
-                  if (localStorage.getItem("task-groups")) {
-                    tasksArray.push([{}]);
-                    taskGroups.push(
-                      newGroupFromTaskCont.getElementsByTagName("input")[0]
-                        .value
-                    );
+                  taskFuntions.createGroupForTask(newGroupFromTaskCont.getElementsByTagName("input")[0].value,selectTaskGroup);
+                  taskFuntions.createGroup(newGroupFromTaskCont.getElementsByTagName("input")[0].value,groupsContainer);
 
-                    //subiendo al local, task y taskgroup (cuando hay elementos);
-                    localStorage.setItem("task", JSON.stringify(tasksArray));
-                    localStorage.setItem(
-                      "task-groups",
-                      JSON.stringify(taskGroups)
-                    );
-                  } else {
-                    if (
-                      groupsContainer.children[0].classList.contains(
-                        "notice-message"
-                      )
-                    ) {
-                      groupsContainer.children[0].remove();
-                      groupsContainer.classList.remove(
-                        "task__group__cont--empty"
-                      );
-                    }
-                    let newTaskGroups = [];
-                    newTaskGroups.push(
-                      newGroupFromTaskCont.getElementsByTagName("input")[0]
-                        .value
-                    );
-                    localStorage.setItem(
-                      "task-groups",
-                      JSON.stringify(newTaskGroups)
-                    );
-                    localStorage.setItem("task", JSON.stringify([[{}]]));
+                  const newGroup ={
+                    nameGroup: newGroupFromTaskCont.getElementsByTagName("input")[0].value,
+                    taskGroups: [{
+                      name: input.value,
+                      dateTask: dateTaskInput.value,
+                      priority: taskFuntions.getPriority(todayGlobal, dateTaskInput.value)
+                    }]
                   }
+
+                  createGroup(newGroup);
+
                   newGroupFromTaskCont.classList.add("hide");
-                  newGroupFromTaskCont.getElementsByTagName("input")[0].value =
-                    "";
+                  newGroupFromTaskCont.getElementsByTagName("input")[0].value ="";
                 } else {
-                  taskFuntions.generateText(
-                    "h4",
-                    "Ya existe un grupo con ese nombre",
-                    addTaskInner
-                  );
+                  taskFuntions.generateText("h4","Ya existe un grupo con ese nombre",addTaskInner, e.target);
                 }
               } else {
-                taskFuntions.generateText(
-                  "h4",
-                  "escribe aqui el nombre del grupo",
-                  addTaskInner
-                );
+                taskFuntions.generateText("h4","escribe aqui el nombre del grupo",addTaskInner, e.target);
               }
               validateTaskGroupContent();
             } else {
-              if (
-                taskFuntions.isRepeatedTask(
-                  input.value,
-                  tasksArray,
-                  taskGroups,
-                  selectTaskGroup.value
-                )
-              ) {
-                const newGroupFromTaskCont = document.getElementById(
-                  "new__group__from__task__container"
-                );
+
+              if(!taskFuntions.isRepeatedTask2(input.value, selectTaskGroup.value, globalData)){
+                const newGroupFromTaskCont = document.getElementById("new__group__from__task__container");
                 newGroupFromTaskCont.classList.add("hide");
-
-                taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-
-                //creamos la tarea
-                taskFuntions.createTask(
-                  todayGlobal,
-                  /*callendarToday*/ taskGroups,
-                  tasksArray,
-                  groupsContainer,
-                  selectTaskGroup.value,
-                  dateTaskInput.value,
-                  input.value
-                );
 
                 taskFuntions.hideForms(blurContentsForms, daysTask);
                 blurSect.classList.add("hide");
                 menuContent.classList.toggle("functions__burguer__hiden");
 
+                const grupo = globalData.find(grupo => grupo.nameGroup === selectTaskGroup.value);
+                
+                const oldsTasks = grupo.taskGroup;
+
+                const newTask = {
+                  taskGroup : [...oldsTasks, {
+                    name: input.value,
+                    dateTask : moment(dateTaskInput.value),
+                    priority : taskFuntions.getPriority(todayGlobal, dateTaskInput.value)
+                  }]
+                }
+
+                createTasks(grupo._id, newTask);
+
                 input.value = "";
                 dateTaskInput.value = "";
                 selectTaskGroup.value = "Default";
-              } else {
-                taskFuntions.generateText(
-                  "h4",
-                  "Ya existe una tarea con ese nombre",
-                  addTaskInner
-                );
+              }else{
+                taskFuntions.generateText("h4","Ya existe una tarea con ese nombre",addTaskInner, e.target);
               }
+  
+              /*
+                    if (taskFuntions.isRepeatedTask(input.value,tasksArray,taskGroups,selectTaskGroup.value)) {
+                      
+                      //creamos la tarea
+                      /*
+                      taskFuntions.createTask(todayGlobal,/*callendarToday*//*taskGroups,tasksArray,groupsContainer,selectTaskGroup.value,dateTaskInput.value,input.value);
+
+                      
+                    }*/
             }
           } else {
-            taskFuntions.generateText(
-              "h4",
-              "Selecciona un grupo",
-              addTaskInner
-            );
+            taskFuntions.generateText("h4", "Selecciona un grupo",addTaskInner, e.target);
           }
 
           //esto es para ocultar el div del input para nuevo grupo desde create task
@@ -354,50 +239,23 @@ addTaskBtn.addEventListener("click", () => {
           );
           //newGroupFromTaskCont.classList.add('hide');
         } else {
-          taskFuntions.generateText(
-            "h4",
-            "no se permite fecha con mas de 50 años",
-            addTaskInner
-          );
+          taskFuntions.generateText("h4","no se permite fecha con mas de 50 años",addTaskInner, e.target);
         }
       } else {
-        taskFuntions.generateText(
-          "h4",
-          "la fecha tiene que ser futura",
-          addTaskInner
-        );
+        taskFuntions.generateText("h4","la fecha tiene que ser futura",addTaskInner, e.target);
       }
-      //console.log('es valido fecha');
-    } else {
-      //console.log('rechazado fecha');
     }
-    //console.log('es valido input name');
-  } else {
-    //console.log('rechazado input name');
-    console.log(validateInput(input.value));
   }
-  setTaskTrashEvent();
+  //setTaskTrashEvent();
   validateTaskGroupContent();
 });
 getForPriorityBtn.addEventListener("click", (e) => {
-  tasks = JSON.parse(localStorage.getItem("task"));
-  tasksArray = tasks;
-  if (tasks) {
-    tasksArray = tasks;
-  }
-
-  taskFuntions.getForPriority(
-    todayGlobal,
-    tasksArray,
-    prioritySelect,
-    priorityResultContainer
-  );
+  taskFuntions.getForPriority(todayGlobal,globalData,prioritySelect,priorityResultContainer);
 });
 // for menu buttons
 menuButtonsArray.forEach((el) =>
   el.children[1].addEventListener("click", (e) => {
     if (e.target.textContent === "Añadir grupo") {
-      console.log("clicado en ", e.target.textContent);
       blurSect.classList.remove("hide");
       taskFuntions.generateInputs(e.target.parentElement, blurContentContainer);
     } else if (e.target.textContent === "Añadir tarea") {
@@ -429,13 +287,15 @@ monthLeftArrow.addEventListener("click", () => {
     callendarmonth,
     callendarWeeks,
     callendarDays
-  );
+  );/*
   taskFuntions.setTaskOnCallendar(
     tasksArray,
     taskGroups,
     todayGlobal,
     callendarToday
-  );
+  );*/
+
+  taskFuntions.setTaskOnCallendar2(globalData, todayGlobal, callendarToday);
 
   taskFuntions.getWeather(
     TodayWeather,
@@ -459,12 +319,8 @@ monthRightArrow.addEventListener("click", () => {
     callendarWeeks,
     callendarDays
   );
-  taskFuntions.setTaskOnCallendar(
-    tasksArray,
-    taskGroups,
-    todayGlobal,
-    callendarToday
-  );
+  taskFuntions.setTaskOnCallendar2(globalData, todayGlobal, callendarToday);
+
   taskFuntions.getWeather(
     TodayWeather,
     callendarToday,
@@ -499,21 +355,22 @@ newsContainer.addEventListener("click", () => {
 // ------------- END EVENT LISTENERS -------------//
 
 // ------------- FUNCTIONS -------------//
-function validateInput(inp, cont) {
+function validateInput(inp, cont, btn) {
+
   let aux = 0;
   if (inp === "") {
-    console.log("vacio");
+    //console.log("vacio");
     aux++;
-    taskFuntions.generateText("h4", "no se permite campos vacios", cont);
+    taskFuntions.generateText("h4", "no se permite campos vacios", cont, btn);
   }
   if (inp.length > 30) {
-    console.log("no es menor que 30");
+    //console.log("no es menor que 30");
     aux++;
-    taskFuntions.generateText("h4", "texto muy largo", cont);
+    taskFuntions.generateText("h4", "texto muy largo", cont, btn);
   }
 
   if (aux > 0) {
-    console.log("no valido");
+    //console.log("no valido");
     return false;
   } else {
     //console.log('valido');
@@ -521,19 +378,20 @@ function validateInput(inp, cont) {
   }
 }
 function validateTaskGroupContent() {
-  console.log("validacion");
   //para saber si se le tiene que añadir la papelera a los grupos;
   const allTaskGroups = document.querySelectorAll(".task__group");
 
   for (let i = 0; i < allTaskGroups.length; i++) {
     //add trash if the group ist empty
     if (allTaskGroups[i].children.length < 2) {
-      console.log("grupo vacio");
       allTaskGroups[i].firstChild.children[0].classList.remove("hide");
 
       //event for delete empty group
       allTaskGroups[i].firstChild.children[0].addEventListener("click", (e) => {
-        e.target.parentElement.parentElement.remove();
+
+        const groupToDelete = globalData.find( group => group.nameGroup===e.target.parentElement.textContent);
+
+        deleteGroup(groupToDelete._id);
 
         //quitar el elemento del select
         for (let i2 = 0; i2 < selectTaskGroup.children.length; i2++) {
@@ -545,53 +403,6 @@ function validateTaskGroupContent() {
           }
         }
 
-        //quitar un objeto del array Tasks EN LOCAL (mejorar- no  es especifico, solo quito con un .pop());
-        taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-        tasksArray = JSON.parse(localStorage.getItem("task"));
-
-        console.log(taskGroups);
-        console.log(tasksArray);
-        console.log(e.target.parentElement.textContent);
-        for (let m = 0; m < taskGroups.length; m++) {
-          if (taskGroups[m] === e.target.parentElement.textContent) {
-            console.log(tasksArray[m], m);
-
-            tasksArray.splice(m, 1);
-          }
-        }
-
-        localStorage.setItem("task", JSON.stringify(tasksArray));
-        //busco el id del titulo
-
-        /*
-                taskGroups = JSON.parse(localStorage.getItem('task-groups'));
-                tasksArray=JSON.parse(localStorage.getItem('task'));
-                console.log(tasksArray);
-                tasksArray.pop();
-                console.log(tasksArray);
-
-                localStorage.setItem('task', JSON.stringify(tasksArray));*/
-
-        const updatedTaskGroups = taskGroups.filter(
-          (el) => el !== e.target.parentElement.firstChild.textContent
-        );
-        if (updatedTaskGroups.length === 0) {
-          //los datos que se van a subir a local es vacio []
-          localStorage.removeItem("task-groups");
-          localStorage.removeItem("task");
-          taskFuntions.generateText(
-            "h3",
-            "no hay grupos de tareas",
-            groupsContainer
-          );
-        } else {
-          //new localStorage taskGroups
-          localStorage.setItem(
-            "task-groups",
-            JSON.stringify(updatedTaskGroups)
-          );
-          console.log(updatedTaskGroups);
-        }
       });
     }
   }
@@ -602,64 +413,162 @@ function setTaskTrashEvent() {
   //console.log(allTaskTrash)
   for (let k = 0; k < allTaskTrash.length; k++) {
     allTaskTrash[k].firstChild.children[0].addEventListener("click", (e) => {
-      //quitarlo del Local
-      taskGroups = JSON.parse(localStorage.getItem("task-groups"));
-      tasksArray = JSON.parse(localStorage.getItem("task"));
 
-      for (let j = 0; j < taskGroups.length; j++) {
-        //encuentro de que grupo es el trash clicado
-        if (
-          taskGroups[j] ===
-          e.target.parentElement.parentElement.parentElement.children[0]
-            .textContent
-        ) {
-          //console.log('es de:', e.target.parentElement.parentElement.parentElement.children[0].textContent, 'indice en local', j);
+      
+      const group = globalData.find(group => group.nameGroup === e.target.parentElement.parentElement.parentElement.children[0].textContent);
+      const toDeleteTask = group.taskGroup.find(task => task.name === e.target.parentElement.textContent);
 
-          //entro a las tareas del grupo
-          console.log("esta aqui", tasksArray[j]);
+      const newTaskArray = group.taskGroup.filter(el => el._id!==toDeleteTask._id);
+      const newTasks = {
+        taskGroup : newTaskArray
+      } 
 
-          //reviso las clases que tiene el grupo,
-          console.log(e.target.parentElement.parentElement.children);
-
-          //todas las tareas, menos la que he clicado
-          const tareas = tasksArray[j];
-          let newTareas = tareas.filter(
-            (el) => el.name !== e.target.parentElement.textContent
-          );
-          //pongo el nuevo contenido de las tareas
-          tasksArray[j] = newTareas;
-
-          //asegurarme que en el local, task no quede [] sino [{}]
-          if (tasksArray[j].length === 0) {
-            tasksArray[j].push({});
-            //poner la papelera del grupo
-            console.log(
-              e.target.parentElement.parentElement.parentElement.children[0].children[0].classList.remove(
-                "hide"
-              )
-            );
-
-            e.target.parentElement.parentElement.parentElement.children[0].children[0].classList.remove(
-              "hide"
-            );
-            validateTaskGroupContent();
-
-            console.log("vacio");
-          }
-          //subir
-          localStorage.setItem("task", JSON.stringify(tasksArray));
-        }
-      }
+      deleteTask(group._id, newTasks);
 
       //quitarlo del DOM
       e.target.parentElement.parentElement.remove();
 
-      // y que le ponga la papelera de una vez a el grupo
-      console.log(tasksArray);
-      /*if(tasksArray.length<1){
-
-            }*/
     });
   }
+}
+
+
+
+
+const loadTasks = async () => {
+
+    try {
+        const response = await fetch(`${requestsURL}tasks/`);
+        const data = await response.json();
+
+        globalData = data;
+
+      if(data.length ===0){
+        console.log('no hay datos', data);
+      }else{
+        data.forEach((el, i) => {
+            taskFuntions.createGroup(el.nameGroup , groupsContainer);
+            taskFuntions.createGroupForTask(el.nameGroup, selectTaskGroup);
+
+            if(el.taskGroup.length===0){
+              validateTaskGroupContent();
+            }
+
+            el.taskGroup.forEach(task => {
+              taskFuntions.createTaskDOM(task, groupsContainer.children[i], todayGlobal);
+            });
+            setTaskTrashEvent();
+            taskFuntions.setTaskOnCallendar2(data, todayGlobal, callendarToday);
+        });
+
+      }
+
+    } catch (error) {
+        console.log('Error pidiendo datos', error);       
+    }finally{
+        
+    }
+}
+const clearTasks = () => {
+  const NowGroupsContainer = document.getElementById("task__group__container");
+  const nowSelectTaskGroup = document.getElementById("select__groups__task"); 
+
+  let childrensGroups = NowGroupsContainer.children.length; 
+  let childrensSelectTaskGroup = nowSelectTaskGroup.children.length; 
+
+  for(let i=0 ; i<callendarToday.parentElement.children.length ; i++){
+    
+    if(callendarToday.parentElement.children[i].getAttribute('data-date')){
+      callendarToday.parentElement.children[i].classList.remove('task__Media');
+      callendarToday.parentElement.children[i].classList.remove('task__Urgente');
+      callendarToday.parentElement.children[i].classList.remove('task__Alta');
+      callendarToday.parentElement.children[i].classList.remove('task__Baja');
+    }
+  }
+
+  if(NowGroupsContainer.children.length>0 || nowSelectTaskGroup.children.length>0){
+    for(let i=0 ; i<childrensGroups; i++){
+      NowGroupsContainer.children[0].remove();
+    }
+    for(let j=2 ; j<childrensSelectTaskGroup; j++){
+      nowSelectTaskGroup.children[2].remove();
+    }
+  }
+}
+const createTasks = async (id, taskData) => {
+    try {
+        const response = await fetch(`${requestsURL}tasks/${id}`, {
+          method: 'PUT',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(taskData)
+        });
+        const data = await response.json();
+        
+    } catch (error) {
+        console.log('Error subiendo datos', error);       
+    }finally{
+      clearTasks();
+      loadTasks();
+    }
+}
+const deleteTask = async (id , taskData) => {
+    try {
+        const response = await fetch(`${requestsURL}tasks/delete/${id}`, {
+          method: 'PUT',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(taskData)
+        });
+        const data = await response.json();
+
+        console.log('DATA DE peticion DELETE TASKS' ,data);
+        
+    } catch (error) {
+        console.log('Error borrando tarea', error);       
+    }finally{
+      console.log('delete task finalized');
+      clearTasks();
+      loadTasks();
+    }
+}
+const createGroup = async (groupData) => {
+    try {
+        const response = await fetch(`${requestsURL}tasks/group/`, {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(groupData)
+        });
+        const data = await response.json();
+        
+    } catch (error) {
+        console.log('Error subiendo datos', error);       
+    }finally{
+      clearTasks();
+      loadTasks();
+    }
+}
+const deleteGroup = async (id) => {
+
+    try {
+        const response = await fetch(`${requestsURL}tasks/group/${id}`, {
+          method: 'DELETE',
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        
+    } catch (error) {
+        console.log('Error borrando GRUPO', error);       
+    }finally{
+      console.log('DELETE GROUP finalized');
+      clearTasks();
+      loadTasks();
+    }
 }
 // ------------- END FUNCTIONS -------------//

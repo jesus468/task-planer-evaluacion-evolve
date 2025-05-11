@@ -38,7 +38,7 @@
               <i class="fa-solid fa fa-plus"></i>
               <h3>Añadir tarea</h3>
             </div>
-            <div id="search__task" class="menu__buttons">
+            <div id="search__task" class="menu__buttons" style="display: none;">
               <i class="fa-solid fa-magnifying-glass"></i>
               <h3>Search task</h3>
             </div>
@@ -54,6 +54,33 @@
     <div id="loader__cont">
       <img src="./assets/branding/logo.png" alt="" />
     </div>
+
+
+    <div id="login__cont" style="display: none;">
+        <div id="login__form__cont">
+          <h2>Inicia Sesion</h2>
+          <form id="login__form" action="">
+              <div id="inputs__cont">
+                <label for="mail">Correo</label>
+                <input id="mail__input" type="email" name="mail">
+              
+                <label for="pass">Contraseña</label>
+                <input id="password__input" type="text" name="pass">
+
+                <input type="button" value="Enviar">
+              </div>
+          </form>
+        </div>
+
+        <div id="login__buttons__cont">
+            <h3>No tienes una cuenta?</h3>
+            <h4>Registrate</h4>
+            <div id="login__button">
+              <input type="button" value="Registrarse">
+            </div>
+        </div>
+    </div>
+
 
     <div id="main__cont">
       <section id="callendar__container">

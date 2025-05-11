@@ -1,20 +1,24 @@
 // --------------- FUNCTION FOR GROUPS --------------- // 
-export function generateText(typeText, Content, container){
+export function generateText(typeText, Content, container, btn){
+    if(btn){
+        btn.setAttribute('disabled',true);
+    }
+    //console.log(btn);
+
+
     const notice = document.createElement(typeText);
     notice.textContent=Content;
     notice.classList.add('notice-message');
     container.append(notice);
 
     setTimeout(()=>{
+        btn.removeAttribute('disabled');
         container.getElementsByTagName('h4')[0].remove();
     },3000);
 }
 export function createGroup (groupName, container){
     const detailTag = document.createElement('details');
     detailTag.classList.add('task__group');
-
-    //const div = document.createElement('div');
-    //div.classList.add('task__group__div__container');
 
     const summaryTag = document.createElement('summary');
     summaryTag.textContent = groupName;
@@ -27,7 +31,6 @@ export function createGroup (groupName, container){
 
 
     detailTag.append(summaryTag);
-    //detailTag.append(div);
     summaryTag.append(trash)
     container.append(detailTag);
 }
@@ -35,22 +38,7 @@ export function createGroupForTask (groupName, container){
     const optionTag = document.createElement('option');
     optionTag.classList.add('task__group--option');
     optionTag.textContent=groupName;
-    //const div = document.createElement('div');
-    //div.classList.add('task__group__div__container');
-
-    //const summaryTag = document.createElement('summary');
-    //summaryTag.textContent = ;
-/*
-    const trash = document.createElement('i');
-    trash.classList.add('fa-solid');
-    trash.classList.add('fa');
-    trash.classList.add('fa-trash-can');
-    trash.classList.add('hide');
-*/
-
-    //detailTag.append(summaryTag);
-    //detailTag.append(div);
-    //summaryTag.append(trash)
+   
     container.append(optionTag);
 }
 export function hideForms(formsCont, taskOnDays){
@@ -70,18 +58,18 @@ export function generateInputs(parent , container){
     const parentId = parent.id;
 
     if(parentId==='add__group'){
-        console.log('container', container.firstElementChild.children[0].classList.remove('hide'));
+        container.firstElementChild.children[0].classList.remove('hide');
     }else if(parentId==='add__task'){
-        console.log('container', container.firstElementChild.children[1].classList.remove('hide'));
+        container.firstElementChild.children[1].classList.remove('hide');
     }else if(parentId==='get__for__priority'){
-        console.log('container', container.firstElementChild.children[3].classList.remove('hide'));
+        container.firstElementChild.children[3].classList.remove('hide');
     }else if(parentId==='days__container'){
-        console.log('container', container.firstElementChild.children[4].classList.remove('hide'));
+        container.firstElementChild.children[4].classList.remove('hide');
     }
 }
 // --------------- END FUNCTION FOR GROUPS --------------- // 
 // --------------- FUNCTION FOR TASK --------------- // 
-export function createTask(today, /*todayCallendarTag */taskGroup , arrayTask, container,taskGroupSelected, dateTask, nameTask){
+export function createTask(today, taskGroup , arrayTask, container,taskGroupSelected, dateTask, nameTask){
     if(taskGroup){
        //si el primer elemento esta vacio lo elimino
         if(!(arrayTask[taskGroup.indexOf(taskGroupSelected)][0].name)){
@@ -95,8 +83,6 @@ export function createTask(today, /*todayCallendarTag */taskGroup , arrayTask, c
         //crearlos en el dom
         for(let i=0; i<container.children.length;i++){
             if(container.children[i].children[0].textContent===taskGroupSelected){
-                //container.children[i].append('tarea');
-
                 //ocultar la papelera del grupo
                 container.children[i].children[0].children[0].classList.add('hide');
 
@@ -138,7 +124,7 @@ export function createTaskDOM (task, container, today){
     divDate.classList.add('task__content__container');
 
     const taskDate = document.createElement('p');
-    taskDate.textContent = task.dateTask;
+    taskDate.textContent = moment(task.dateTask).format('DD-MM-YYYY');
 
     const taskDateTitle = document.createElement('h5');
     taskDateTitle.textContent = 'Entrega';
@@ -173,56 +159,33 @@ export function createTaskDOM (task, container, today){
     detailTag.append(divPriority);
     summaryTag.append(trash)
     container.append(detailTag);
-
-
-    
-    /*
-    allTaskTrash.forEach(el => {
-
-        el.firstChild.children[0].addEventListener('click',(e)=>{
-            console.log(e.target);
-        })
-    })*/
 }
-export function isRepeatedGroup(input, local){
-    let countRepeted = 0;
-    console.log(input);
 
-    if(local){
-        for(let i=0;i<local.length;i++){
-            console.log(local[i]);
-            if(local[i]===input){
-                countRepeted++;
-            }
-        }
-    }
-    
-    console.log(countRepeted);
-    return countRepeted>0 ?  false : true;
-
-}
-export function isRepeatedTask(input, localTask, localGroup, selectGroup){
+export function isRepeatedGroup2(input, data){
     let countRepeted = 0;
 
-    if(localTask){
-        //conseguir el indice del grupo
-        for(let k =0; k<localGroup.length;k++){
-            if(localGroup[k]===selectGroup){
-                for(let j =0; j<localTask[k].length;j++){
-                    console.log(localTask[k][j]);
-                    console.log(input);
-                    if(localTask[k][j].name===input){
-                        countRepeted++;
-                    }
-                }           
-            }
+    data.forEach(group => {
+        if(group.nameGroup===input){
+            countRepeted++;
         }
-    }
-    console.log(countRepeted);
+    })
     return countRepeted>0 ?  false : true;
+}
+
+export function isRepeatedTask2(input, selectGroup, data){
+    let countRepeted = 0;
+
+    const grupo = data.find(grupo => grupo.nameGroup === selectGroup);
+
+    grupo.taskGroup.forEach(task => {
+        if(task.name === input){
+            countRepeted++;
+        }
+    });
+    return countRepeted>0 ?  true : false;
 
 }
-export function getForPriority(today, locale, priority, resultCont){
+export function getForPriority(today, data, priority, resultCont){
         //limpiar result container
         console.log(resultCont.children);
         if(resultCont.children.length>0){
@@ -233,170 +196,45 @@ export function getForPriority(today, locale, priority, resultCont){
             }
         }
 
-    if(locale){
-        console.log(priority.value);
-        console.log(resultCont);
-        console.log(locale);
-        console.log(today);
-        let urgentPriority = [];
-        let higthPriority = [];
-        let mediumPriority = [];
-        let lowPriority = [];
-
-
-
-        //quiero recorrer todas las tareas y organizarlas segun su prioridad
-        for(let i = 0 ; i<locale.length; i++){
-            for(let j = 0; j<locale[i].length; j++){
-                //confirmo que haya una tarea
-                if(locale[i][j].dateTask){
-                    //añado segun su prioridad
-                    if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Urgente'){
-                        urgentPriority.push(locale[i][j]);
-                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Alta'){
-                        higthPriority.push(locale[i][j]);
-                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Media'){
-                        mediumPriority.push(locale[i][j]);
-                    }else if(getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD'))==='Baja'){
-                        lowPriority.push(locale[i][j]);
-                    }
-                    console.log(locale[i][j].dateTask , getPriority(today, moment(locale[i][j].dateTask).format('YYYY-MM-DD')));
+        let priorityArray = [];
+        
+        data.forEach(group => {
+            const samePriority = group.taskGroup.forEach(task => {
+                if(task.priority===priority.value.slice(6)){
+                    priorityArray.push(task);
                 }
-            } 
+            });
+        })
+
+        if(priorityArray.length>0){
+
+            priorityArray.forEach(el => {
+                const div = document.createElement('div');
+            div.classList.add('priority__task__container');
+
+            const taskTitle = document.createElement('h3');
+            taskTitle.textContent = el.name;
+
+            const dateTaskPriorityContainer = document.createElement('div');
+
+            const dateTaskPriorityTitle = document.createElement('h4');
+            dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
+            
+            const dateTaskPriority = document.createElement('p');
+            dateTaskPriority.textContent = el.dateTask;
+
+            resultCont.append(div);
+            div.append(taskTitle);
+            div.append(dateTaskPriorityContainer);
+            dateTaskPriorityContainer.append(dateTaskPriorityTitle);
+            dateTaskPriorityContainer.append(dateTaskPriority);
+            })
+            
+        }else{
+            const aviso = document.createElement('h3');
+            aviso.textContent='No hay tareas de esta prioridad';
+            resultCont.append(aviso);
         }
-
-        //crearlo al DOM
-        if(priority.value==='task__Urgente'){
-            console.log('crear tareas urgente')
-            if(urgentPriority.length!==0){
-                for(let k = 0; k<urgentPriority.length; k++){
-                    const div = document.createElement('div');
-                    div.classList.add('priority__task__container');
-    
-                    const taskTitle = document.createElement('h3');
-                    taskTitle.textContent = urgentPriority[k].name;
-    
-                    const dateTaskPriorityContainer = document.createElement('div');
-    
-                    const dateTaskPriorityTitle = document.createElement('h4');
-                    dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
-                    
-                    const dateTaskPriority = document.createElement('p');
-                    dateTaskPriority.textContent = urgentPriority[k].dateTask;
-    
-                    resultCont.append(div);
-                    div.append(taskTitle);
-                    div.append(dateTaskPriorityContainer);
-                    dateTaskPriorityContainer.append(dateTaskPriorityTitle);
-                    dateTaskPriorityContainer.append(dateTaskPriority);
-                }
-            }else{
-                const aviso = document.createElement('h3');
-                aviso.textContent='No hay tareas de esta prioridad';
-                resultCont.append(aviso);
-            }
-        }else if(priority.value==='task__Alta'){
-            if(higthPriority.length!==0){
-                console.log('crear tareas alta');
-                for(let k = 0; k<higthPriority.length; k++){
-                    const div = document.createElement('div');
-                    div.classList.add('priority__task__container');
-
-                    const taskTitle = document.createElement('h3');
-                    taskTitle.textContent = higthPriority[k].name;
-
-                    const dateTaskPriorityContainer = document.createElement('div');
-
-                    const dateTaskPriorityTitle = document.createElement('h4');
-                    dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
-                    
-                    const dateTaskPriority = document.createElement('p');
-                    dateTaskPriority.textContent = higthPriority[k].dateTask;
-
-                    resultCont.append(div);
-                    div.append(taskTitle);
-                    div.append(dateTaskPriorityContainer);
-                    dateTaskPriorityContainer.append(dateTaskPriorityTitle);
-                    dateTaskPriorityContainer.append(dateTaskPriority);
-                }
-            }else{
-                const aviso = document.createElement('h3');
-                aviso.textContent='No hay tareas de esta prioridad';
-                resultCont.append(aviso);
-            }
-            
-        }else if(priority.value==='task__Media'){
-            if(mediumPriority.length!==0){
-                for(let k = 0; k<mediumPriority.length; k++){
-                    const div = document.createElement('div');
-                    div.classList.add('priority__task__container');
-    
-                    const taskTitle = document.createElement('h3');
-                    taskTitle.textContent = mediumPriority[k].name;
-    
-                    const dateTaskPriorityContainer = document.createElement('div');
-    
-                    const dateTaskPriorityTitle = document.createElement('h4');
-                    dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
-                    
-                    const dateTaskPriority = document.createElement('p');
-                    dateTaskPriority.textContent = mediumPriority[k].dateTask;
-    
-                    resultCont.append(div);
-                    div.append(taskTitle);
-                    div.append(dateTaskPriorityContainer);
-                    dateTaskPriorityContainer.append(dateTaskPriorityTitle);
-                    dateTaskPriorityContainer.append(dateTaskPriority);
-                }
-            }else{
-                const aviso = document.createElement('h3');
-                aviso.textContent='No hay tareas de esta prioridad';
-                resultCont.append(aviso);
-            }
-            
-        }else if(priority.value==='task__Baja'){
-            console.log('crear tareas baja')
-            if(lowPriority.length!==0){
-                for(let k = 0; k<lowPriority.length; k++){
-                    const div = document.createElement('div');
-                    div.classList.add('priority__task__container');
-    
-                    const taskTitle = document.createElement('h3');
-                    taskTitle.textContent = lowPriority[k].name;
-    
-                    const dateTaskPriorityContainer = document.createElement('div');
-    
-                    const dateTaskPriorityTitle = document.createElement('h4');
-                    dateTaskPriorityTitle.textContent = 'Fecha de entrega:'
-                    
-                    const dateTaskPriority = document.createElement('p');
-                    dateTaskPriority.textContent = lowPriority[k].dateTask;
-    
-                    resultCont.append(div);
-                    div.append(taskTitle);
-                    div.append(dateTaskPriorityContainer);
-                    dateTaskPriorityContainer.append(dateTaskPriorityTitle);
-                    dateTaskPriorityContainer.append(dateTaskPriority);
-                }
-            }else{
-                const aviso = document.createElement('h3');
-                aviso.textContent='No hay tareas de esta prioridad';
-                resultCont.append(aviso);
-            }
-            
-        }
-
-
-        //ya los tengo por prioridades, falta crearlo al DOM
-        console.log('urgente', urgentPriority );
-        console.log('alta', higthPriority );
-        console.log('media', mediumPriority );
-        console.log('baja', lowPriority );
-
-    }else{
-        console.log('no hay tareas que organizar');
-    }
-    
 }
 // --------------- END FUNCTION FOR TASK --------------- // 
 // --------------- FUNCTION FOR CALLENDAR --------------- // 
@@ -488,6 +326,48 @@ export function getPriority(todayDate, taskDate){
 
     return priority;
 }
+
+export function setTaskOnCallendar2(taskGroup ,todayOrigin, todayCallendarTag){
+
+        //esto es recorrer el calendario
+        for(let i=0 ; i<todayCallendarTag.parentElement.children.length ; i++){
+
+            if(todayCallendarTag.parentElement.children[i].getAttribute('task__cd')){
+                todayCallendarTag.parentElement.children[i].removeAttribute('task__cd')
+            }
+
+            if(todayCallendarTag.parentElement.children[i].getAttribute('data-date')){
+                let taskCdArray=[];
+                taskGroup.forEach(group => {
+                    group.taskGroup.forEach(taskArray => {
+                        //console.log('task:', taskArray, 'de:', group.nameGroup);
+                        if(moment(taskArray.dateTask).format('YYYY-MM-DD')===todayCallendarTag.parentElement.children[i].getAttribute('data-date')){
+                            //console.log('coincidencia en: ', moment(taskArray.dateTask).format('YYYY-MM-DD'));
+                            //if ya contiene un task__cd, 
+                            if(todayCallendarTag.parentElement.children[i].getAttribute('task__cd')){
+                                //contiene ya una tarea
+                                taskCdArray.push(`${group.nameGroup}-${taskArray.name}`);
+                            }else{
+                                //creando por primera vez
+                                taskCdArray=[];
+                                taskCdArray.push(`${group.nameGroup}-${taskArray.name}`);
+
+                            }
+                            todayCallendarTag.parentElement.children[i].setAttribute('task__cd', taskCdArray);
+                            //ponerle el color a la celda en el calendario
+                            todayCallendarTag.parentElement.children[i].classList.add('task__'+getPriority(todayOrigin, todayCallendarTag.parentElement.children[i].getAttribute('data-date')))
+
+                        }
+
+                    });
+                })
+
+                
+            }
+        } 
+}
+
+
 export function setTaskOnCallendar(localeTasks, localeGroups,todayOrigin, todayCallendarTag){
     //console.log(localeTasks);
     //console.log(moment(today).format('YYYY-MM-DD'));
@@ -536,6 +416,8 @@ export function setTaskOnCallendar(localeTasks, localeGroups,todayOrigin, todayC
                             taskCdArray=[];
                             taskCdArray.push(`${localeGroups[tasksArrayOrg[aux].taskGp]}-${tasksArrayOrg[aux].task.name}`);
                         }
+
+
                         todayCallendarTag.parentElement.children[k].setAttribute('task__cd', taskCdArray);
                     }
                 }
@@ -592,14 +474,17 @@ export function getDaysTask(elm, cont){
     }
 }
 // --------------- END FUNCTION FOR CALLENDAR --------------- // 
+
 // --------------- FETCH --------------- //
+
 //++++++ WEATHER ++++++
 export async function getWeather(todayWeatherTag, todayCellOriginal, todayGlobal, callendarmonthTag) {
     let todayCell = todayCellOriginal;
-    console.log('obteniendo clima');
     try {
         const response2 = await fetch('http://api.openweathermap.org/geo/1.0/direct?q={palencia}&appid=e78f29f6caa3eaa7b4f4032bcc7a39b7');
         const data2 = await response2.json();
+
+        
 
         const response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?lat=${data2[0].lat}&lon=${data2[0].lon}&appid=e78f29f6caa3eaa7b4f4032bcc7a39b7&units=metric`);
         const data = await response.json();
@@ -608,13 +493,28 @@ export async function getWeather(todayWeatherTag, todayCellOriginal, todayGlobal
 
         if(moment(todayGlobal).format('MMMM')===callendarmonthTag.children[1].textContent){
             let auxDateWeather = 0;
+
+            if(todayWeatherTag.children.length === 0){
+        
+            //poner la imagen del clima de hoy
+            const imgTag= document.createElement('img');
+            imgTag.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png`);
+
+            //poner la temperatura de hoy
+            const todayTemp= document.createElement('h3');
+            todayTemp.textContent= Math.round(data.list[0].main.temp)+'°C';
+
+            todayWeatherTag.append(todayTemp);
+            todayWeatherTag.append(imgTag);
+        }
+
             for(let i = 0; i<data.list.length; i++){
                         
                 if(data.list[i].dt_txt.slice(0,10)!==auxDateWeather){
                     if(i>0){
                         const imgTagCell= document.createElement('img');
                         imgTagCell.classList.add('weather__cell__img');
-                        imgTagCell.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[i+5].weather[0].icon}.png`);
+                        imgTagCell.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[i+4].weather[0].icon}.png`);
                         todayCell.append(imgTagCell);
 
                     }else{
@@ -630,30 +530,15 @@ export async function getWeather(todayWeatherTag, todayCellOriginal, todayGlobal
             }
         }
         
-        if(todayWeatherTag.children.length === 0){
         
-            //poner la imagen del clima de hoy
-            const imgTag= document.createElement('img');
-            imgTag.setAttribute('src', `http://openweathermap.org/img/wn/${data.list[0].weather[0].icon}.png`);
-
-            //poner la temperatura de hoy
-            const todayTemp= document.createElement('h3');
-            todayTemp.textContent= Math.round(data.list[0].main.temp)+'°C';
-
-            todayWeatherTag.append(todayTemp);
-            todayWeatherTag.append(imgTag);
-        }
         
 
     } catch (error) {
         console.log(error.message);
-    }finally{
-        console.log('finalizado clima');
     }
     
 }
 export async function getNews(newsCont){
-    console.log('obteniendo noticias');
     try {
         const response = await fetch('https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=eae15b71457c4aeda6a1c25ab0f44705');
         const data = await response.json();
@@ -668,8 +553,6 @@ export async function getNews(newsCont){
         }
     } catch (error) {
         console.log(error.message);
-    }finally{
-        console.log('termino get news');
     }
 }
 // --------------- END FETCH --------------- // 

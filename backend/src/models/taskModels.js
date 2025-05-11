@@ -1,19 +1,27 @@
 const mongoose = require('mongoose');
+const { type } = require('os');
 
 const taskSchema = new mongoose.Schema({
-    name: {
+    nameGroup: {
         type: String,
-        required: true 
+        required : true,
+        unique : true
     },
-    dateTask: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
-    priority: {
-        type: String,
-        required: true
-    }
+    taskGroup: [{
+        name: {
+            type: String,
+            required: true 
+        },
+        dateTask: {
+            type: Date,
+            required: true,
+            default: Date.now
+        },
+        priority: {
+            type: String,
+            required: true
+        }
+    }]
 })
 
 const Task = mongoose.model('Task', taskSchema);

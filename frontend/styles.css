@@ -30,7 +30,7 @@
 #loader__cont{
     background-color: #ffffff;
     position: fixed;
-    z-index: 100;
+    z-index: 1000;
     top: 0;
     left: 0;
     width: 100dvw;
@@ -616,4 +616,9 @@ h3, h4{
     #login__form__cont, #sign__in__cont{
         width: 20%;
     }
+}
+
+
+.fa-solid{
+    margin:  0 15px;
 }

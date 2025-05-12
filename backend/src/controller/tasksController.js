@@ -24,7 +24,8 @@ const taskController ={
         ...createTaskValidation,
         async (req, res) => {
             
-            const { id } = req.params;
+            const { id , token} = req.params;
+            console.log(token , 'token del req params');
             console.log('viendo los datos en el controlador' , req.body)
                 
             try {
@@ -82,6 +83,9 @@ const taskController ={
     createGroup: [
       //...createTaskValidation,
         async (req, res) => {
+            
+            const {token} = req.params;
+            console.log(token , 'token del req params');
             const groupData = req.body
             try {
                 const data = await createGroup(groupData);

@@ -4,8 +4,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'susuper7secreto';
 
 const verifyToken = (req, res, next) => {
     //obtener el token de la cookie firmada
-
-    const token = req.signedCookies.token;
+    console.log(req.params, 'esta es la request');
+    const token = req.params;
 
     if(!token){
         console.log('no se encontro token en la cookie firmada');
@@ -16,12 +16,12 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token.token, JWT_SECRET);
         console.log('token verificado', decoded);
         req.user = decoded ////////////// req.user?
         next();
     } catch (error) {
-        console.error('error al verificar token', e);
+        console.error('error al verificar token', error);
         res.status(401).json({
             message: 'token invalido'
         })

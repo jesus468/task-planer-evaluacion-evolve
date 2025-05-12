@@ -44,7 +44,8 @@ const loginBtn = document.getElementById('login__btn');
 const singInBtn = document.getElementById('sing__in__btn');
 const singInForm = document.getElementById('sing__in__form');
 const loginForm = document.getElementById('login__form__cont');
-
+const loginCont = document.getElementById('login__cont');
+const logoutBtn = document.getElementById('logout__btn');
 
 const footerCont = document.getElementById("footer");
 const footerInner = document.getElementById("news__inner");
@@ -400,8 +401,12 @@ loginBtn.addEventListener('click', (e) => {
       email: loginInputs[0].value,
       password: loginInputs[1].value,
     }
-    login(newUser);
+    login(newUser, e);
   }
+  const rol = localStorage.getItem('token');
+  verifyRol(rol)
+  loginInputs[0].value='';
+  loginInputs[1].value='';
 });
 singInBtn.addEventListener('click', (e) => {
   e.preventDefault();
@@ -429,6 +434,16 @@ singInBtn.addEventListener('click', (e) => {
     createUser(newUser);
   }
 
+    formInputs[0].value='';
+    formInputs[1].value='';
+    formInputs[2].value='';
+    formInputs[3].value='';
+})
+logoutBtn.addEventListener('click', ()=>{
+    console.log('cerrando sesion');
+
+    loginCont.style.display= 'flex';
+    localStorage.clear();
 })
 // ------------- END EVENT LISTENERS -------------//
 
@@ -512,13 +527,19 @@ function setTaskTrashEvent() {
 
 
 const verifyRol = (rol) => {
+  console.log(rol);
+
   const addGroups = document.getElementById('add__group');
   const addtask = document.getElementById('add__task');
   const allTrash = document.querySelectorAll('.fa-trash-can');
-  if(rol!=='admin'){
+  if(!rol){
     addGroups.style.display='none';
     addtask.style.display='none';
-    allTrash.forEach(el => el.style.display='none')
+    allTrash.forEach(el => el.style.display='none');
+  }else{
+    addGroups.style.display='flex';
+    addtask.style.display='flex';
+    allTrash.forEach(el => el.style.display='block');
   }
 }
 
@@ -551,10 +572,18 @@ const loadTasks = async () => {
 
     } catch (error) {
         console.log('Error pidiendo datos', error);       
+        if(error.message==='Failed to fetch'){
+          alert('No esta conectado a la base de datos')
+        }
+
     }finally{
-      verifyRol('admin')
+      const rol = localStorage.getItem('token'); 
+      verifyRol(rol);
     }
 }
+
+//localStorage.clear()
+
 const clearTasks = () => {
   const NowGroupsContainer = document.getElementById("task__group__container");
   const nowSelectTaskGroup = document.getElementById("select__groups__task"); 
@@ -582,8 +611,9 @@ const clearTasks = () => {
   }
 }
 const createTasks = async (id, taskData) => {
+  const token = localStorage.getItem('token');
     try {
-        const response = await fetch(`${requestsURL}tasks/${id}`, {
+        const response = await fetch(`${requestsURL}tasks/${id,token}`, {
           method: 'PUT',
           headers:{
             'Content-Type': 'application/json'
@@ -600,8 +630,9 @@ const createTasks = async (id, taskData) => {
     }
 }
 const deleteTask = async (id , taskData) => {
+  const token = localStorage.getItem('token');
     try {
-        const response = await fetch(`${requestsURL}tasks/delete/${id}`, {
+        const response = await fetch(`${requestsURL}tasks/delete/${id, token}`, {
           method: 'PUT',
           headers:{
             'Content-Type': 'application/json'
@@ -621,8 +652,9 @@ const deleteTask = async (id , taskData) => {
     }
 }
 const createGroup = async (groupData) => {
+    const token = localStorage.getItem('token');  
     try {
-        const response = await fetch(`${requestsURL}tasks/group/`, {
+        const response = await fetch(`${requestsURL}tasks/group/${token}`, {
           method: 'POST',
           headers:{
             'Content-Type': 'application/json'
@@ -672,12 +704,14 @@ const createUser = async (userData) => {
         console.log('data del front', data);
         
     } catch (error) {
+        console.log('Error subiendo datos', error.message);       
+        console.log('Error subiendo datos', error.statusCode);       
         console.log('Error subiendo datos', error);       
     }finally{
       console.log('create user finished on front');
     }
 }
-const login = async (userData) => {
+const login = async (userData, e) => {
   console.log(userData);
   try {
         const response = await fetch(`${requestsURL}user/log`, {
@@ -689,19 +723,27 @@ const login = async (userData) => {
         });
         const data = await response.json();
         console.log('data del front', data);
+        console.log(data.code);
+
+        if(data.code === 401){
+          taskFuntions.generateText("h4","Correo o contraseña invalidos",loginSection, e.target);
+        }
         
+        if(data.message==='login exitoso'){
+          loginCont.style.display= 'none';
+        }
+
+        console.log('el token', data.token);
+        if(data.token!==0){
+          localStorage.setItem('token', data.token);
+        }
     } catch (error) {
         console.log('Error subiendo datos', error);       
     }finally{
       console.log('create user finished on front');
+      const rol = localStorage.getItem('token');
+      verifyRol(rol);
     }
 }
-// ------------- END FUNCTIONS -------------//
-/*const admin = {
-   name: 'juan',
-    secondName: 'de la vega',
-    email: 'juanjito@admin.com',
-    rol: 'admin',
-    password: 'juan1234',
 
-}*/
+// ------------- END FUNCTIONS -------------//

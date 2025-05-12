@@ -33,8 +33,11 @@ const userController = {
 
                 
             } catch (error) {
-                console.log('There was an error (controller):', error);
-                response.status(500).json({ error: 'Error creating users from DB' });
+                console.log('There was an error (controller):', error.code);
+                if(error.code===11000){
+                    res.status(500).json({code: error.code, message: 'Correo ya existe'});
+                }
+                res.status(500).json({ error: 'Error creating users from DB' , code: error.code});
             }finally{
                 console.log('create users finalized (controller)')
             }

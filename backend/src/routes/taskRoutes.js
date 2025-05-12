@@ -6,13 +6,13 @@ const verifyToken = require('../middlewares/authMiddleware');
 
 router.get('/', taskController.getTasks);
 
-router.put('/:id', verifyToken, taskController.addTask);
+router.put('/:id', taskController.addTask);
 
-router.put('/delete/:id', verifyToken,taskController.deleteTask);
+router.put('/delete/:id',taskController.deleteTask);
 
-router.post('/group/', verifyToken, taskController.createGroup);
+router.post('/group/:token', taskController.createGroup);
 
-router.delete('/group/:id',  verifyToken, taskController.deleteGroup);
+router.delete('/group/:id', taskController.deleteGroup);
 
 
 

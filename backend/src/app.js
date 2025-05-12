@@ -16,14 +16,13 @@ app.use(cookieParser());
 
 app.use(cors());
 
+
 app.use(
   helmet({
     contentSecurityPolicy: false,
   }),
 );
-
 app.use(mongoSanitize());
-
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -31,7 +30,6 @@ const apiLimiter = rateLimit({
 });
 
 app.use('/api', apiLimiter);
-
 
 app.use(notFoundHandler);
 app.use(errorHandler);
